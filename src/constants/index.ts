@@ -1,7 +1,5 @@
-// Shared constants for NOVA.
-
 export const ROUTES = {
   home: "/",
-} as const;
+} satisfies Record<string, string>;
 
 export const APP_NAME = "NOVA";

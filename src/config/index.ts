@@ -1,9 +1,13 @@
-// Application-level configuration constants.
+import type { Locale } from "@/types";
 
-export const appConfig = {
+export interface AppConfig {
+  readonly name: string;
+  readonly defaultLocale: Locale;
+  readonly supportedLocales: readonly Locale[];
+}
+
+export const appConfig: AppConfig = {
   name: "NOVA",
-  defaultLocale: "fa" as const,
-  supportedLocales: ["fa"] as const,
-} as const;
-
-export type AppConfig = typeof appConfig;
+  defaultLocale: "fa",
+  supportedLocales: ["fa"],
+};
