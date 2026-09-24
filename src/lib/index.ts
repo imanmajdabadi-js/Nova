@@ -9,3 +9,5 @@ export function cn(
     )
     .join(" ");
 }
+
+export { usePathname } from "./use-pathname";
