@@ -2,11 +2,12 @@ import { use } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Button, IconButton } from "@/components/ui";
+import { IconButton } from "@/components/ui";
 import type { SVGProps } from "react";
 import type { Experience } from "@/data/experiences";
 import { experiences } from "@/data/experiences";
 import { ExperienceGallery } from "./ExperienceGallery";
+import { BookingFlow } from "./BookingFlow";
 
 function StarIcon(props: SVGProps<SVGSVGElement>) {
   return (
@@ -99,9 +100,7 @@ function BookingPanel({ experience }: { experience: Experience }) {
         </div>
       </div>
 
-      <Button variant="primary" size="lg" className="w-full">
-        رزرو تجربه
-      </Button>
+      <BookingFlow experience={experience} />
 
       <p className="text-center text-xs text-foreground-subtle">
         رزرو آنلاین امن با پشتیبانی ۲۴/۷

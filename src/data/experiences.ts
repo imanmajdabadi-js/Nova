@@ -1,3 +1,10 @@
+export type ExperienceSession = {
+  readonly id: string;
+  readonly date: string;
+  readonly time: string;
+  readonly remainingCapacity: number;
+};
+
 export type Experience = {
   readonly id: string;
   readonly title: string;
@@ -22,6 +29,7 @@ export type Experience = {
     readonly text: string;
     readonly author: string;
   };
+  readonly sessions: readonly ExperienceSession[];
 };
 
 export type SortOption =
@@ -82,6 +90,12 @@ export const experiences: readonly Experience[] = [
       text: "بیشترین تجربه‌ی خوبی که داشته‌ام. مریم فوق‌العاده است.",
       author: "علی ر.",
     },
+    sessions: [
+      { id: "s1-1", date: "۱۴۰۵/۰۷/۰۵", time: "۱۰:۰۰", remainingCapacity: 8 },
+      { id: "s1-2", date: "۱۴۰۵/۰۷/۰۵", time: "۱۴:۳۰", remainingCapacity: 5 },
+      { id: "s1-3", date: "۱۴۰۵/۰۷/۱۰", time: "۱۰:۰۰", remainingCapacity: 3 },
+      { id: "s1-4", date: "۱۴۰۵/۰۷/۱۰", time: "۱۷:۰۰", remainingCapacity: 8 },
+    ],
   },
   {
     id: "2",
@@ -119,6 +133,12 @@ export const experiences: readonly Experience[] = [
       text: "تور فوق‌العاده بود. نقاطی را دیدم که اگر خودم بروم هرگز پیدا نمی‌کردم.",
       author: "مریم ک.",
     },
+    sessions: [
+      { id: "s2-1", date: "۱۴۰۵/۰۷/۰۶", time: "۰۹:۰۰", remainingCapacity: 12 },
+      { id: "s2-2", date: "۱۴۰۵/۰۷/۰۶", time: "۱۵:۰۰", remainingCapacity: 15 },
+      { id: "s2-3", date: "۱۴۰۵/۰۷/۰۸", time: "۱۰:۳۰", remainingCapacity: 7 },
+      { id: "s2-4", date: "۱۴۰۵/۰۷/۰۸", time: "۱۶:۰۰", remainingCapacity: 2 },
+    ],
   },
   {
     id: "3",
@@ -155,6 +175,11 @@ export const experiences: readonly Experience[] = [
       text: "تجربه‌ای فوق‌العاده و آموزنده. فاطمه معلمی عالی است.",
       author: "سارا م.",
     },
+    sessions: [
+      { id: "s3-1", date: "۱۴۰۵/۰۷/۰۷", time: "۱۱:۰۰", remainingCapacity: 10 },
+      { id: "s3-2", date: "۱۴۰۵/۰۷/۰۷", time: "۱۵:۰۰", remainingCapacity: 8 },
+      { id: "s3-3", date: "۱۴۰۵/۰۷/۱۲", time: "۱۰:۰۰", remainingCapacity: 4 },
+    ],
   },
   {
     id: "4",
@@ -191,6 +216,11 @@ export const experiences: readonly Experience[] = [
       text: "فضای باغ ارم با موسیقی سنتی... معجزه است.",
       author: "امیر ح.",
     },
+    sessions: [
+      { id: "s4-1", date: "۱۴۰۵/۰۷/۱۱", time: "۱۸:۰۰", remainingCapacity: 180 },
+      { id: "s4-2", date: "۱۴۰۵/۰۷/۱۲", time: "۱۹:۳۰", remainingCapacity: 200 },
+      { id: "s4-3", date: "۱۴۰۵/۰۷/۱۳", time: "۱۸:۰۰", remainingCapacity: 150 },
+    ],
   },
   {
     id: "5",
@@ -227,6 +257,11 @@ export const experiences: readonly Experience[] = [
       text: "تور عالی بود. حسین معلمی خوبی بود و مسیر بسیار زیبا بود.",
       author: "نیما ت.",
     },
+    sessions: [
+      { id: "s5-1", date: "۱۴۰۵/۰۷/۰۶", time: "۰۷:۰۰", remainingCapacity: 8 },
+      { id: "s5-2", date: "۱۴۰۵/۰۷/۰۶", time: "۱۰:۰۰", remainingCapacity: 12 },
+      { id: "s5-3", date: "۱۴۰۵/۰۷/۱۳", time: "۰۷:۰۰", remainingCapacity: 10 },
+    ],
   },
   {
     id: "6",
@@ -263,6 +298,10 @@ export const experiences: readonly Experience[] = [
       text: "کارگاه عالی. علی استاد خوبی است و فضای کارگاه بسیار دوستانه است.",
       author: "رضا پ.",
     },
+    sessions: [
+      { id: "s6-1", date: "۱۴۰۵/۰۷/۰۸", time: "۱۴:۰۰", remainingCapacity: 6 },
+      { id: "s6-2", date: "۱۴۰۵/۰۷/۱۵", time: "۱۰:۰۰", remainingCapacity: 5 },
+    ],
   },
   {
     id: "7",
@@ -299,6 +338,11 @@ export const experiences: readonly Experience[] = [
       text: "تجربه‌ای فوق‌العاده. امید عالی بود.",
       author: "پارسا ر.",
     },
+    sessions: [
+      { id: "s7-1", date: "۱۴۰۵/۰۷/۰۷", time: "۰۹:۰۰", remainingCapacity: 8 },
+      { id: "s7-2", date: "۱۴۰۵/۰۷/۰۷", time: "۱۳:۰۰", remainingCapacity: 10 },
+      { id: "s7-3", date: "۱۴۰۵/۰۷/۰۹", time: "۰۹:۳۰", remainingCapacity: 6 },
+    ],
   },
   {
     id: "8",
@@ -335,5 +379,10 @@ export const experiences: readonly Experience[] = [
       text: "نمایشگاه بسیار خوب بود. عکس‌های واقعاً زیبایی بود.",
       author: "کیمیا ه.",
     },
+    sessions: [
+      { id: "s8-1", date: "۱۴۰۵/۰۷/۰۵", time: "۱۱:۰۰", remainingCapacity: 50 },
+      { id: "s8-2", date: "۱۴۰۵/۰۷/۰۶", time: "۱۴:۰۰", remainingCapacity: 89 },
+      { id: "s8-3", date: "۱۴۰۵/۰۷/۱۰", time: "۱۶:۰۰", remainingCapacity: 60 },
+    ],
   },
 ];
