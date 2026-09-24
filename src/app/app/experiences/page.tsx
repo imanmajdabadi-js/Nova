@@ -3,45 +3,11 @@
 import Link from "next/link";
 import { Card, CardBody } from "@/components/ui";
 import { StarOutlined } from "@ant-design/icons";
+import { experiences } from "@/data/experiences";
 
-const experiences = [
-  {
-    id: "1",
-    title: "كلاس آشپزی ایرانی",
-    location: "تهران، چinar باغ",
-    price: "۲,۵۰۰,۰۰۰",
-    rating: 4.9,
-    reviews: 128,
-    href: "/experiences/1",
-  },
-  {
-    id: "2",
-    title: "تور مخفی شهر",
-    location: "اصفهان، میدان نقش جهان",
-    price: "۸۵۰,۰۰۰",
-    rating: 4.7,
-    reviews: 89,
-    href: "/experiences/2",
-  },
-  {
-    id: "3",
-    title: "workshop گلیم بافی",
-    location: "کرمان، بازار",
-    price: "۱,۲۰۰,۰۰۰",
-    rating: 4.8,
-    reviews: 56,
-    href: "/experiences/3",
-  },
-  {
-    id: "4",
-    title: "کنسرت سنتی",
-    location: "شیراز، باغ ارم",
-    price: "۱,۸۰۰,۰۰۰",
-    rating: 4.6,
-    reviews: 234,
-    href: "/experiences/4",
-  },
-];
+function formatPrice(price: number): string {
+  return new Intl.NumberFormat("fa-IR").format(price) + " تومان";
+}
 
 export default function ExperiencesPage() {
   return (
@@ -57,7 +23,10 @@ export default function ExperiencesPage() {
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {experiences.map((experience) => (
-          <Link key={experience.id} href={experience.href}>
+          <Link
+            key={experience.id}
+            href={`/app/experiences/${experience.slug}`}
+          >
             <Card hoverable className="h-full">
               <CardBody>
                 <div className="space-y-3">
@@ -78,7 +47,7 @@ export default function ExperiencesPage() {
                       {experience.reviews} نظر
                     </span>
                     <span className="text-base font-semibold text-foreground">
-                      {experience.price} تومان
+                      {formatPrice(experience.price)}
                     </span>
                   </div>
                 </div>
