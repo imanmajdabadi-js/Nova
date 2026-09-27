@@ -1,18 +1,24 @@
 import { use } from "react";
 import { Suspense } from "react";
 import { BookingsListWrapper } from "./BookingsListWrapper";
+import { statusOrder } from "@/data/bookings";
 import type { BookingFilter } from "@/components/domain/booking-tabs";
 
 const pageDescription =
   "همه‌ی رزروهای شما در یکجا. وضعیت رزروها، تاریخ‌ها و جزئیات را مدیریت کنید.";
+
+const validFilters: readonly string[] = ["all", ...statusOrder];
 
 export default function DashboardBookingsPage({
   searchParams,
 }: {
   searchParams: Promise<{ filter?: string }>;
 }) {
-  const filterParam = use(searchParams).filter as BookingFilter | undefined;
-  const initialFilter: BookingFilter = filterParam ?? "all";
+  const filterParam = use(searchParams).filter;
+  const initialFilter: BookingFilter =
+    filterParam && validFilters.includes(filterParam)
+      ? (filterParam as BookingFilter)
+      : "all";
 
   return (
     <div className="min-h-screen bg-background pb-12">

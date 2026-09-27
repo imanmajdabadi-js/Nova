@@ -29,6 +29,10 @@ export type Experience = {
     readonly text: string;
     readonly author: string;
   };
+  readonly ratingDistribution?: readonly {
+    readonly stars: number;
+    readonly count: number;
+  }[];
   readonly sessions: readonly ExperienceSession[];
 };
 
@@ -96,6 +100,13 @@ export const experiences: readonly Experience[] = [
       text: "بیشترین تجربه‌ی خوبی که داشته‌ام. مریم فوق‌العاده است.",
       author: "علی ر.",
     },
+    ratingDistribution: [
+      { stars: 5, count: 118 },
+      { stars: 4, count: 8 },
+      { stars: 3, count: 1 },
+      { stars: 2, count: 1 },
+      { stars: 1, count: 0 },
+    ],
     sessions: [
       { id: "s1-1", date: "۱۴۰۵/۰۷/۰۵", time: "۱۰:۰۰", remainingCapacity: 8 },
       { id: "s1-2", date: "۱۴۰۵/۰۷/۰۵", time: "۱۴:۳۰", remainingCapacity: 5 },
@@ -139,6 +150,13 @@ export const experiences: readonly Experience[] = [
       text: "تور فوق‌العاده بود. نقاطی را دیدم که اگر خودم بروم هرگز پیدا نمی‌کردم.",
       author: "مریم ک.",
     },
+    ratingDistribution: [
+      { stars: 5, count: 72 },
+      { stars: 4, count: 10 },
+      { stars: 3, count: 5 },
+      { stars: 2, count: 1 },
+      { stars: 1, count: 1 },
+    ],
     sessions: [
       { id: "s2-1", date: "۱۴۰۵/۰۷/۰۶", time: "۰۹:۰۰", remainingCapacity: 12 },
       { id: "s2-2", date: "۱۴۰۵/۰۷/۰۶", time: "۱۵:۰۰", remainingCapacity: 15 },
@@ -181,6 +199,13 @@ export const experiences: readonly Experience[] = [
       text: "تجربه‌ای فوق‌العاده و آموزنده. فاطمه معلمی عالی است.",
       author: "سارا م.",
     },
+    ratingDistribution: [
+      { stars: 5, count: 48 },
+      { stars: 4, count: 5 },
+      { stars: 3, count: 2 },
+      { stars: 2, count: 1 },
+      { stars: 1, count: 0 },
+    ],
     sessions: [
       { id: "s3-1", date: "۱۴۰۵/۰۷/۰۷", time: "۱۱:۰۰", remainingCapacity: 10 },
       { id: "s3-2", date: "۱۴۰۵/۰۷/۰۷", time: "۱۵:۰۰", remainingCapacity: 8 },
@@ -222,6 +247,13 @@ export const experiences: readonly Experience[] = [
       text: "فضای باغ ارم با موسیقی سنتی... معجزه است.",
       author: "امیر ح.",
     },
+    ratingDistribution: [
+      { stars: 5, count: 180 },
+      { stars: 4, count: 33 },
+      { stars: 3, count: 15 },
+      { stars: 2, count: 5 },
+      { stars: 1, count: 1 },
+    ],
     sessions: [
       { id: "s4-1", date: "۱۴۰۵/۰۷/۱۱", time: "۱۸:۰۰", remainingCapacity: 180 },
       { id: "s4-2", date: "۱۴۰۵/۰۷/۱۲", time: "۱۹:۳۰", remainingCapacity: 200 },
@@ -263,6 +295,13 @@ export const experiences: readonly Experience[] = [
       text: "تور عالی بود. حسین معلمی خوبی بود و مسیر بسیار زیبا بود.",
       author: "نیما ت.",
     },
+    ratingDistribution: [
+      { stars: 5, count: 135 },
+      { stars: 4, count: 18 },
+      { stars: 3, count: 9 },
+      { stars: 2, count: 3 },
+      { stars: 1, count: 2 },
+    ],
     sessions: [
       { id: "s5-1", date: "۱۴۰۵/۰۷/۰۶", time: "۰۷:۰۰", remainingCapacity: 8 },
       { id: "s5-2", date: "۱۴۰۵/۰۷/۰۶", time: "۱۰:۰۰", remainingCapacity: 12 },
@@ -304,6 +343,13 @@ export const experiences: readonly Experience[] = [
       text: "کارگاه عالی. علی استاد خوبی است و فضای کارگاه بسیار دوستانه است.",
       author: "رضا پ.",
     },
+    ratingDistribution: [
+      { stars: 5, count: 25 },
+      { stars: 4, count: 12 },
+      { stars: 3, count: 3 },
+      { stars: 2, count: 2 },
+      { stars: 1, count: 1 },
+    ],
     sessions: [
       { id: "s6-1", date: "۱۴۰۵/۰۷/۰۸", time: "۱۴:۰۰", remainingCapacity: 6 },
       { id: "s6-2", date: "۱۴۰۵/۰۷/۱۵", time: "۱۰:۰۰", remainingCapacity: 5 },
@@ -344,6 +390,13 @@ export const experiences: readonly Experience[] = [
       text: "تجربه‌ای فوق‌العاده. امید عالی بود.",
       author: "پارسا ر.",
     },
+    ratingDistribution: [
+      { stars: 5, count: 220 },
+      { stars: 4, count: 55 },
+      { stars: 3, count: 25 },
+      { stars: 2, count: 8 },
+      { stars: 1, count: 4 },
+    ],
     sessions: [
       { id: "s7-1", date: "۱۴۰۵/۰۷/۰۷", time: "۰۹:۰۰", remainingCapacity: 8 },
       { id: "s7-2", date: "۱۴۰۵/۰۷/۰۷", time: "۱۳:۰۰", remainingCapacity: 10 },
@@ -385,6 +438,13 @@ export const experiences: readonly Experience[] = [
       text: "نمایشگاه بسیار خوب بود. عکس‌های واقعاً زیبایی بود.",
       author: "کیمیا ه.",
     },
+    ratingDistribution: [
+      { stars: 5, count: 70 },
+      { stars: 4, count: 10 },
+      { stars: 3, count: 5 },
+      { stars: 2, count: 3 },
+      { stars: 1, count: 1 },
+    ],
     sessions: [
       { id: "s8-1", date: "۱۴۰۵/۰۷/۰۵", time: "۱۱:۰۰", remainingCapacity: 50 },
       { id: "s8-2", date: "۱۴۰۵/۰۷/۰۶", time: "۱۴:۰۰", remainingCapacity: 89 },
@@ -456,7 +516,10 @@ export function filterExperiences(
 export function getUniqueLocations(
   experiences: readonly Experience[],
 ): string[] {
-  return ["همه", ...new Set(experiences.map((e) => e.location))].sort();
+  const collator = new Intl.Collator("fa-IR");
+  const unique = [...new Set(experiences.map((e) => e.location))];
+  unique.sort(collator.compare);
+  return ["همه", ...unique];
 }
 
 export function getSortOptions(): readonly {

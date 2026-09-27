@@ -1,41 +1,13 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Badge } from "@/components/ui";
+import { Badge, StarIcon } from "@/components/ui";
 import { WishlistToggle } from "@/components/domain/wishlist-toggle";
 import { experiences } from "@/data/experiences";
 import { useWishlistStore } from "@/lib/wishlist-store";
-import { formatPriceFa } from "@/lib";
-import { cn } from "@/lib";
+import { formatPrice, cn } from "@/lib";
 import type { Experience } from "@/data/experiences";
-
-function useClient() {
-  return useSyncExternalStore(
-    (callback) => {
-      if (typeof window === "undefined") return () => {};
-      window.addEventListener("hydration", callback);
-      return () => window.removeEventListener("hydration", callback);
-    },
-    () => true,
-    () => false,
-  );
-}
-
-function StarIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width={14}
-      height={14}
-      fill="currentColor"
-      {...props}
-    >
-      <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279L12 17.446l-7.416 3.967 1.48-8.279L3.332 9.306z" />
-    </svg>
-  );
-}
 
 function EmptyState() {
   return (
@@ -80,7 +52,7 @@ function SavedExperienceCard({
   experience: Experience;
   index: number;
 }) {
-  const formattedPrice = formatPriceFa(experience.price) + " تومان";
+  const formattedPrice = formatPrice(experience.price);
 
   // Featured styling for first item
   const isFeatured = index === 0;
@@ -129,7 +101,7 @@ function SavedExperienceCard({
         </Link>
         <div className="flex flex-wrap items-center gap-3 text-sm text-foreground-muted">
           <span className="flex items-center gap-1">
-            <StarIcon className="text-warning" />
+            <StarIcon />
             <span>{experience.rating}</span>
             <span>({experience.reviews} نظر)</span>
           </span>
@@ -154,7 +126,6 @@ function SavedExperienceCard({
 }
 
 export default function WishlistPage() {
-  const isClient = useClient();
   const { savedExperienceIds, isHydrated } = useWishlistStore();
 
   // Get saved experiences
@@ -162,7 +133,7 @@ export default function WishlistPage() {
     .map((id) => experiences.find((e) => e.id === id))
     .filter((e): e is Experience => e !== undefined);
 
-  if (!isClient || !isHydrated) {
+  if (!isHydrated) {
     return (
       <div className="min-h-screen bg-background pb-12">
         <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
@@ -202,11 +173,9 @@ export default function WishlistPage() {
                 بدهی.
               </p>
             </div>
-            <div className="flex items-center gap-2 text-sm text-foreground-muted">
-              <Badge variant="primary" size="sm">
-                {savedExperiences.length} تجربه ذخیره‌شده
-              </Badge>
-            </div>
+            <Badge variant="primary" size="sm">
+              {savedExperiences.length} تجربه ذخیره‌شده
+            </Badge>
           </div>
         </header>
 

@@ -1,22 +1,9 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
 import { IconButton } from "@/components/ui";
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { cn } from "@/lib";
-
-function useClient() {
-  return useSyncExternalStore(
-    (callback) => {
-      if (typeof window === "undefined") return () => {};
-      window.addEventListener("hydration", callback);
-      return () => window.removeEventListener("hydration", callback);
-    },
-    () => true,
-    () => false,
-  );
-}
 
 export function WishlistToggle({
   experienceId,
@@ -29,14 +16,15 @@ export function WishlistToggle({
   showLabel?: boolean;
   className?: string;
 }) {
-  const isClient = useClient();
-  const { isSaved, toggle, isHydrated } = useWishlistStore();
+  const isHydrated = useWishlistStore((state) => state.isHydrated);
+  const isSaved = useWishlistStore((state) => state.isSaved);
+  const toggle = useWishlistStore((state) => state.toggle);
   const saved = isSaved(experienceId);
 
-  if (!isClient || !isHydrated) {
+  if (!isHydrated) {
     return (
       <IconButton
-        label={showLabel ? (saved ? "ذخیره شده" : "ذخیره تجربه") : undefined}
+        label={showLabel ? "ذخیره تجربه" : undefined}
         icon={<HeartOutlined />}
         variant="ghost"
         size={size}

@@ -3,7 +3,7 @@
 import { useMemo, useState, useRef } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui";
-import { cn } from "@/lib";
+import { cn, formatPrice } from "@/lib";
 import type { Experience, ExperienceSession } from "@/data/experiences";
 import { useBookingStore } from "@/lib/booking-store";
 import { validateBooking, calculateBookingTotal } from "@/data/experiences";
@@ -15,10 +15,6 @@ export interface BookingSelection {
   date: string | null;
   session: ExperienceSession | null;
   guests: number;
-}
-
-function formatPrice(price: number): string {
-  return new Intl.NumberFormat("fa-IR").format(price) + " تومان";
 }
 
 function DateSelection({
@@ -467,18 +463,6 @@ export function BookingFlow({ experience }: BookingFlowProps) {
       )}
 
       <div className="border-t border-border pt-4">
-        {step === "date" && (
-          <Button variant="primary" size="lg" className="w-full" disabled>
-            انتخاب تاریخ
-          </Button>
-        )}
-
-        {step === "session" && (
-          <Button variant="primary" size="lg" className="w-full" disabled>
-            انتخاب جلسه
-          </Button>
-        )}
-
         {step === "guests" && (
           <>
             <div className="mb-3 flex justify-between text-sm">

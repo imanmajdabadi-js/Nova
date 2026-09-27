@@ -1,28 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Badge } from "@/components/ui";
-import { cn, formatPriceFa } from "@/lib";
+import { Badge, StarIcon } from "@/components/ui";
+import { cn, formatPrice } from "@/lib";
 import type { Booking } from "@/data/bookings";
 import type { Experience } from "@/data/experiences";
 import type { CustomerBooking } from "@/lib/booking-store";
 import { statusBadgeVariant, statusLabels } from "@/data/bookings";
-import type { SVGProps } from "react";
 
 type DisplayBooking = Booking | CustomerBooking;
-
-function StarIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width={14}
-      height={14}
-      fill="currentColor"
-      {...props}
-    >
-      <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279L12 17.446l-7.416 3.967 1.48-8.279L3.332 9.306z" />
-    </svg>
-  );
-}
 
 function getBookingSessionDate(booking: DisplayBooking): string {
   if ("session" in booking) {
@@ -64,7 +49,7 @@ export function BookingCard({
   const participants = getBookingParticipants(booking);
   const price = getBookingPrice(booking);
   const { reference, status } = booking;
-  const formattedPrice = formatPriceFa(price) + " تومان";
+  const formattedPrice = formatPrice(price);
   const variant = statusBadgeVariant[status];
   const statusLabel = statusLabels[status];
 

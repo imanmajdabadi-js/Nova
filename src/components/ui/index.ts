@@ -27,3 +27,5 @@ export { Divider, type DividerProps } from "./divider";
 
 export { Spinner } from "./spinner";
 export type { SpinnerProps, SpinnerSize } from "./spinner";
+
+export { StarIcon } from "./icons/star-icon";

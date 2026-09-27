@@ -1,13 +1,7 @@
-"use client";
-
 import Link from "next/link";
-import { Card, CardBody } from "@/components/ui";
-import { StarOutlined } from "@ant-design/icons";
+import { Card, CardBody, StarIcon } from "@/components/ui";
 import { experiences } from "@/data/experiences";
-
-function formatPrice(price: number): string {
-  return new Intl.NumberFormat("fa-IR").format(price) + " تومان";
-}
+import { formatPrice } from "@/lib";
 
 export default function ExperiencesPage() {
   return (
@@ -35,7 +29,7 @@ export default function ExperiencesPage() {
                       {experience.title}
                     </h3>
                     <div className="flex items-center gap-1 text-sm text-foreground-muted">
-                      <StarOutlined className="text-warning" />
+                      <StarIcon className="text-warning" />
                       <span>{experience.rating}</span>
                     </div>
                   </div>

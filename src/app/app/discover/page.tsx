@@ -4,7 +4,7 @@ import { Suspense, useMemo, useState, useEffect } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Image from "next/image";
 import { Button, IconButton, Badge } from "@/components/ui";
-import { HeartOutlined } from "@ant-design/icons";
+import { CloseOutlined } from "@ant-design/icons";
 import type { Experience, FilterState, SortOption } from "@/data/experiences";
 import {
   categories,
@@ -12,13 +12,10 @@ import {
   getUniqueLocations,
   getSortOptions,
   filterExperiences,
+  defaultFilterState,
 } from "@/data/experiences";
 import { WishlistToggle } from "@/components/domain/wishlist-toggle";
-import { formatPriceFa } from "@/lib";
-
-function formatPrice(price: number): string {
-  return formatPriceFa(price) + " تومان";
-}
+import { formatPrice } from "@/lib";
 
 function ExperienceCard({ experience }: { experience: Experience }) {
   return (
@@ -91,7 +88,7 @@ function FilterChips({
           >
             دسته: {filters.category}
             <IconButton
-              icon={<HeartOutlined />}
+              icon={<CloseOutlined />}
               size="sm"
               variant="ghost"
               label="حذف فیلتر دسته"
@@ -108,7 +105,7 @@ function FilterChips({
           >
             موقعیت: {filters.location}
             <IconButton
-              icon={<HeartOutlined />}
+              icon={<CloseOutlined />}
               size="sm"
               variant="ghost"
               label="حذف فیلتر موقعیت"
@@ -126,7 +123,7 @@ function FilterChips({
             مرتب‌سازی:{" "}
             {getSortOptions().find((o) => o.value === filters.sort)?.label}
             <IconButton
-              icon={<HeartOutlined />}
+              icon={<CloseOutlined />}
               size="sm"
               variant="ghost"
               label="حذف فیلتر مرتب‌سازی"
@@ -143,7 +140,7 @@ function FilterChips({
           >
             جستجو: {filters.search}
             <IconButton
-              icon={<HeartOutlined />}
+              icon={<CloseOutlined />}
               size="sm"
               variant="ghost"
               label="حذف جستجو"
@@ -156,7 +153,7 @@ function FilterChips({
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => {}}
+          onClick={() => onChange(defaultFilterState)}
           className="text-sm"
         >
           پاک کردن فیلترها
@@ -175,67 +172,44 @@ function FilterBar({
   onChange: (next: FilterState) => void;
   locations: string[];
 }) {
-  const [localSearch, setLocalSearch] = useState(filters.search);
-
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-1 items-center gap-3">
-          <div className="relative flex-1 max-w-md">
-            <input
-              type="search"
-              value={localSearch}
-              onChange={(e) => setLocalSearch(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  onChange({ ...filters, search: localSearch.trim() });
-                }
-              }}
-              placeholder="جستجوی تجربه، مکان، دسته، میزبان..."
-              className="w-full rounded-md border border-border bg-surface px-4 py-2.5 pr-10 text-sm text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-            />
-            <span className="absolute inset-y-0 right-3 flex items-center text-foreground-muted">
-              🔍
-            </span>
-          </div>
-          <select
-            value={filters.sort}
-            onChange={(e) =>
-              onChange({ ...filters, sort: e.target.value as SortOption })
-            }
-            className="rounded-md border border-border bg-surface px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-          >
-            {getSortOptions().map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <select
-            value={filters.category}
-            onChange={(e) => onChange({ ...filters, category: e.target.value })}
-            className="rounded-md border border-border bg-surface px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-          >
-            {categories.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
-          <select
-            value={filters.location}
-            onChange={(e) => onChange({ ...filters, location: e.target.value })}
-            className="rounded-md border border-border bg-surface px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-          >
-            {locations.map((location) => (
-              <option key={location} value={location}>
-                {location}
-              </option>
-            ))}
-          </select>
-        </div>
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-wrap items-center gap-2">
+        <select
+          value={filters.sort}
+          onChange={(e) =>
+            onChange({ ...filters, sort: e.target.value as SortOption })
+          }
+          className="rounded-md border border-border bg-surface px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+        >
+          {getSortOptions().map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+        <select
+          value={filters.category}
+          onChange={(e) => onChange({ ...filters, category: e.target.value })}
+          className="rounded-md border border-border bg-surface px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+        >
+          {categories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
+        <select
+          value={filters.location}
+          onChange={(e) => onChange({ ...filters, location: e.target.value })}
+          className="rounded-md border border-border bg-surface px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+        >
+          {locations.map((location) => (
+            <option key={location} value={location}>
+              {location}
+            </option>
+          ))}
+        </select>
       </div>
       <FilterChips filters={filters} onChange={onChange} />
     </div>

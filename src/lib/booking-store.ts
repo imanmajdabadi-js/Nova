@@ -33,11 +33,16 @@ function generateId(): string {
 }
 
 function getPersianDate(): string {
-  // Simplified - in real app would use proper Jalali conversion
   const now = new Date();
-  const year = now.getFullYear() - 621; // Approximate Jalali year
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
+  const formatter = new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  const parts = formatter.formatToParts(now);
+  const year = parts.find((p) => p.type === "year")?.value ?? "0000";
+  const month = parts.find((p) => p.type === "month")?.value ?? "00";
+  const day = parts.find((p) => p.type === "day")?.value ?? "00";
   return `${year}/${month}/${day}`;
 }
 

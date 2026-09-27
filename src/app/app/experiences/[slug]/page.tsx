@@ -3,26 +3,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { WishlistToggle } from "@/components/domain/wishlist-toggle";
+import { StarIcon } from "@/components/ui";
 import type { SVGProps } from "react";
 import type { Experience, ExperienceSession } from "@/data/experiences";
 import { experiences } from "@/data/experiences";
 import { ExperienceGallery } from "./ExperienceGallery";
 import { BookingFlow } from "./BookingFlow";
-import { formatPriceFa } from "@/lib";
-
-function StarIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width={16}
-      height={16}
-      fill="currentColor"
-      {...props}
-    >
-      <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279L12 17.446l-7.416 3.967 1.48-8.279L3.332 9.306z" />
-    </svg>
-  );
-}
+import { ReviewSection } from "./ReviewSection";
+import { formatPrice } from "@/lib";
 
 function CalendarIcon(props: SVGProps<SVGSVGElement>) {
   return (
@@ -83,10 +71,6 @@ function UsersIcon(props: SVGProps<SVGSVGElement>) {
       <path d="M16 3.13a4 4 0 0 1 0 7.75" />
     </svg>
   );
-}
-
-function formatPrice(price: number): string {
-  return formatPriceFa(price) + " تومان";
 }
 
 function ExperienceHeader({ experience }: { experience: Experience }) {
@@ -344,26 +328,7 @@ function ExperienceContent({ experience }: { experience: Experience }) {
         </div>
       </section>
 
-      {experience.reviewSummary && (
-        <section className="space-y-4">
-          <h2 className="text-2xl font-semibold text-foreground">نظرات</h2>
-          <div className="rounded-xl border border-border bg-surface p-6">
-            <div className="flex items-center gap-2 text-warning">
-              <StarIcon />
-              <span className="font-semibold">{experience.rating}</span>
-              <span className="text-sm text-foreground-muted">
-                ({experience.reviews} نظر)
-              </span>
-            </div>
-            <blockquote className="mt-4 border-r-2 border-primary pr-4 text-lg italic text-foreground">
-              &ldquo;{experience.reviewSummary.text}&rdquo;
-            </blockquote>
-            <p className="mt-2 text-sm text-foreground-muted">
-              — {experience.reviewSummary.author}
-            </p>
-          </div>
-        </section>
-      )}
+      <ReviewSection experience={experience} />
     </div>
   );
 }

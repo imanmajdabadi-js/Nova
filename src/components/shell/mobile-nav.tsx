@@ -16,7 +16,7 @@ export function MobileNav({ navigation, currentPath }: MobileNavProps) {
     <div className="md:hidden">
       <div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-surface/95 backdrop-blur-sm">
         <div className="flex items-center justify-around px-2 py-1">
-          {navigation.slice(0, 4).map((item) => {
+          {navigation.slice(0, 5).map((item) => {
             const isActive =
               currentPath === item.href ||
               (item.href !== "/" && currentPath.startsWith(item.href));

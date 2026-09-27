@@ -16,6 +16,10 @@ export function formatPriceFa(price: number): string {
   return new Intl.NumberFormat("fa-IR").format(price);
 }
 
+export function formatPrice(price: number): string {
+  return formatPriceFa(price) + " تومان";
+}
+
 export { useWishlistStore } from "./wishlist-store";
 export { useBookingStore } from "./booking-store";
 export type { CustomerBooking } from "./booking-store";
