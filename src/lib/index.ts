@@ -11,3 +11,7 @@ export function cn(
 }
 
 export { usePathname } from "./use-pathname";
+
+export function formatPriceFa(price: number): string {
+  return new Intl.NumberFormat("fa-IR").format(price);
+}
