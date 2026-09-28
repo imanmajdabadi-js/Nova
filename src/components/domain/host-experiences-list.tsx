@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Badge, Button } from "@/components/ui";
+import { Button } from "@/components/ui";
 import { useHostExperiencesStore } from "@/lib/host-experiences-store";
 import { checkReadiness } from "@/data/experience-lifecycle";
 import type { Experience, ExperienceStatus } from "@/data/experiences";

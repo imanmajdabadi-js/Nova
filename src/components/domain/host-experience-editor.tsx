@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button, Input, Textarea } from "@/components/ui";
 import { StarIcon } from "@/components/ui";
@@ -303,6 +302,24 @@ export function HostExperienceEditor({
   experienceId: string;
   seedExperience: Experience | undefined;
 }) {
+  const isHydrated = useHostExperiencesStore((state) => state.isHydrated);
+
+  return (
+    <HostExperienceEditorInner
+      key={`${isHydrated ? "h" : "l"}-${experienceId}`}
+      experienceId={experienceId}
+      seedExperience={seedExperience}
+    />
+  );
+}
+
+function HostExperienceEditorInner({
+  experienceId,
+  seedExperience,
+}: {
+  experienceId: string;
+  seedExperience: Experience | undefined;
+}) {
   const router = useRouter();
   const isHydrated = useHostExperiencesStore((state) => state.isHydrated);
   const updateExperiencePatch = useHostExperiencesStore(
@@ -317,11 +334,6 @@ export function HostExperienceEditor({
     (state) => state.getHostExperience,
   );
 
-  const [sessionEdits, setSessionEdits] = useState<ExperienceSession[]>([]);
-  const [isEditingSessions, setIsEditingSessions] = useState(false);
-
-  const [isSaving, setIsSaving] = useState(false);
-
   const experience = useMemo(() => {
     if (!isHydrated) {
       return seedExperience ?? null;
@@ -335,7 +347,7 @@ export function HostExperienceEditor({
 
   const host = useMemo(
     () => (experience ? findHostById(experience.hostId) : null),
-    [experience?.hostId],
+    [experience],
   );
 
   const readiness = useMemo(
@@ -345,36 +357,24 @@ export function HostExperienceEditor({
 
   const allowedTransitions = useMemo(
     () => (experience ? getAllowedTransitions(experience.status) : []),
-    [experience?.status],
+    [experience],
   );
 
-  const formStateRef = useRef<{
-    title: string;
-    description: string;
-    category: string;
-    location: string;
-    price: string;
-    image: string;
-  } | null>(null);
-
-  if (experience && !formStateRef.current) {
-    formStateRef.current = {
-      title: experience.title ?? "",
-      description: experience.description ?? "",
-      category: experience.category ?? "",
-      location: experience.location ?? "",
-      price: experience.price > 0 ? String(experience.price) : "",
-      image: experience.image ?? "",
-    };
-    setSessionEdits(Array.from(experience.sessions ?? []));
-  }
-
-  const title = formStateRef.current?.title ?? "";
-  const description = formStateRef.current?.description ?? "";
-  const category = formStateRef.current?.category ?? "";
-  const location = formStateRef.current?.location ?? "";
-  const price = formStateRef.current?.price ?? "";
-  const image = formStateRef.current?.image ?? "";
+  const [title, setTitle] = useState(() => experience?.title ?? "");
+  const [description, setDescription] = useState(
+    () => experience?.description ?? "",
+  );
+  const [category, setCategory] = useState(() => experience?.category ?? "");
+  const [location, setLocation] = useState(() => experience?.location ?? "");
+  const [price, setPrice] = useState(() =>
+    experience && experience.price > 0 ? String(experience.price) : "",
+  );
+  const [image, setImage] = useState(() => experience?.image ?? "");
+  const [sessionEdits, setSessionEdits] = useState<ExperienceSession[]>(() =>
+    experience ? Array.from(experience.sessions ?? []) : [],
+  );
+  const [isEditingSessions, setIsEditingSessions] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = () => {
     if (!experience) return;
