@@ -69,12 +69,12 @@ type ExperienceReview = {
   readonly id: string;
   readonly experienceId: string;
   readonly customerName: string;
-  readonly rating: number;        // 1–5
+  readonly rating: number; // 1–5
   readonly title: string;
   readonly comment: string;
-  readonly createdAt: string;     // Persian date
+  readonly createdAt: string; // Persian date
   readonly verifiedBooking: boolean;
-}
+};
 ```
 
 This follows the domain model described in `docs/domain.md` (Review entity)
@@ -133,6 +133,7 @@ icons and verified checkmark use **inline SVGs**, not Ant Design icons, to
 avoid requiring a Client Component boundary.
 
 The only Client Components on the Experience Detail page remain:
+
 - `ExperienceGallery` (image carousel interaction)
 - `BookingFlow` (booking state management)
 - `WishlistToggle` (persisted state via Zustand)
@@ -178,6 +179,7 @@ A maximum of 5 reviews are displayed. No scoring algorithm or ML ranking.
 ### Trust Model
 
 **What the UI claims:**
+
 - The aggregate rating (e.g., 4.7) is based on 89 total reviews — sourced from
   `Experience.rating` and `Experience.reviews`.
 - The rating distribution shows how those 89 reviews break down across
@@ -188,6 +190,7 @@ A maximum of 5 reviews are displayed. No scoring algorithm or ML ranking.
   confirmed booking record in the prototype data.
 
 **What the UI does NOT claim:**
+
 - No fake metrics (no "10,000+ customers", "98% satisfaction", etc.)
 - No fake scarcity ("only 2 spots left")
 - The displayed 5 reviews are never implied to be the source of the aggregate
@@ -198,28 +201,28 @@ A maximum of 5 reviews are displayed. No scoring algorithm or ML ranking.
 
 ### Files Created
 
-| File | Purpose |
-|------|---------|
-| `src/data/reviews.ts` | `ExperienceReview` type, 40 mock review records (5 per experience), `getReviewsForExperience()` and `selectReviewsToShow()` helpers |
-| `src/app/app/experiences/[slug]/ReviewSection.tsx` | Server Component with `RatingSummary`, `RatingDistribution`, `ReviewItem`, `ReviewList`, `ReviewEmpty`, `VerifiedBadge` |
+| File                                               | Purpose                                                                                                                             |
+| -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `src/data/reviews.ts`                              | `ExperienceReview` type, 40 mock review records (5 per experience), `getReviewsForExperience()` and `selectReviewsToShow()` helpers |
+| `src/app/app/experiences/[slug]/ReviewSection.tsx` | Server Component with `RatingSummary`, `RatingDistribution`, `ReviewItem`, `ReviewList`, `ReviewEmpty`, `VerifiedBadge`             |
 
 ### Files Modified
 
-| File | Change |
-|------|--------|
-| `src/data/experiences.ts` | Added `ratingDistribution` field to `Experience` type; populated distribution data for all 8 experiences |
+| File                                      | Change                                                                                                                |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `src/data/experiences.ts`                 | Added `ratingDistribution` field to `Experience` type; populated distribution data for all 8 experiences              |
 | `src/app/app/experiences/[slug]/page.tsx` | Imported `ReviewSection`; replaced inline `reviewSummary` blockquote with `<ReviewSection experience={experience} />` |
 
 ### Files NOT Changed (Preserved)
 
-| File | Reason |
-|------|--------|
-| `src/components/domain/booking-card.tsx` | No changes needed — already uses shared `StarIcon`/`formatPrice` |
-| `src/components/domain/booking-detail-view.tsx` | No changes needed |
-| `src/app/dashboard/bookings/*` | No changes — booking architecture preserved |
-| `src/app/dashboard/wishlist/*` | No changes — wishlist architecture preserved |
-| `src/components/domain/wishlist-toggle.tsx` | No changes — Zustand state unchanged |
-| `src/lib/booking-store.ts` | No changes — booking persistence intact |
+| File                                            | Reason                                                           |
+| ----------------------------------------------- | ---------------------------------------------------------------- |
+| `src/components/domain/booking-card.tsx`        | No changes needed — already uses shared `StarIcon`/`formatPrice` |
+| `src/components/domain/booking-detail-view.tsx` | No changes needed                                                |
+| `src/app/dashboard/bookings/*`                  | No changes — booking architecture preserved                      |
+| `src/app/dashboard/wishlist/*`                  | No changes — wishlist architecture preserved                     |
+| `src/components/domain/wishlist-toggle.tsx`     | No changes — Zustand state unchanged                             |
+| `src/lib/booking-store.ts`                      | No changes — booking persistence intact                          |
 
 ## Deferred Features
 
@@ -242,59 +245,59 @@ Verified via Next.js dev server (`http://localhost:3000`):
 
 #### Experience Detail — `/app/experiences/isfahan-hidden-city-tour`
 
-| Check | Result |
-|-------|--------|
-| Page renders | ✅ SSR complete, no errors |
-| Rating summary | ✅ "4.7 از ۵ — بر اساس 89 نظر" |
-| Rating distribution | ✅ 5 bars (72, 10, 5, 1, 1) with percentage widths |
-| Individual reviews | ✅ 5 reviews shown, sorted verified-first then by recency |
-| Verified badge | ✅ "رزرو شده" with checkmark icon on verified reviews |
-| Unverified review | ✅ No badge (سامیار ل.) |
-| Editorial quote | ✅ Blockquote with "تور فوق‌العاده بود..." — مریم ک. |
-| Booking panel | ✅ Sticky, price "۸۵۰٬۰۰۰ تومان / برای هر نفر" |
-| Wishlist toggle | ✅ Heart icon present |
-| Sessions section | ✅ 4 sessions shown, grouped by date |
+| Check               | Result                                                    |
+| ------------------- | --------------------------------------------------------- |
+| Page renders        | ✅ SSR complete, no errors                                |
+| Rating summary      | ✅ "4.7 از ۵ — بر اساس 89 نظر"                            |
+| Rating distribution | ✅ 5 bars (72, 10, 5, 1, 1) with percentage widths        |
+| Individual reviews  | ✅ 5 reviews shown, sorted verified-first then by recency |
+| Verified badge      | ✅ "رزرو شده" with checkmark icon on verified reviews     |
+| Unverified review   | ✅ No badge (سامیار ل.)                                   |
+| Editorial quote     | ✅ Blockquote with "تور فوق‌العاده بود..." — مریم ک.      |
+| Booking panel       | ✅ Sticky, price "۸۵۰٬۰۰۰ تومان / برای هر نفر"            |
+| Wishlist toggle     | ✅ Heart icon present                                     |
+| Sessions section    | ✅ 4 sessions shown, grouped by date                      |
 
 #### Experience Detail — `/app/experiences/persian-cooking-class`
 
-| Check | Result |
-|-------|--------|
-| Page renders | ✅ SSR complete |
-| Rating summary | ✅ "4.9 از ۵ — بر اساس 128 نظر" |
-| Rating distribution | ✅ 5 bars (118, 8, 1, 1, 0) |
-| Reviews | ✅ 5 reviews, 4 verified, 1 unverified |
-| Editorial quote | ✅ "بیشترین تجربه‌ی خوبی..." — علی ر. |
-| Booking panel | ✅ "۲٬۵۰۰٬۰۰۰ تومان / برای هر نفر" |
+| Check               | Result                                 |
+| ------------------- | -------------------------------------- |
+| Page renders        | ✅ SSR complete                        |
+| Rating summary      | ✅ "4.9 از ۵ — بر اساس 128 نظر"        |
+| Rating distribution | ✅ 5 bars (118, 8, 1, 1, 0)            |
+| Reviews             | ✅ 5 reviews, 4 verified, 1 unverified |
+| Editorial quote     | ✅ "بیشترین تجربه‌ی خوبی..." — علی ر.  |
+| Booking panel       | ✅ "۲٬۵۰۰٬۰۰۰ تومان / برای هر نفر"     |
 
 #### Invalid slug — `/app/experiences/nonexistent-experience`
 
-| Check | Result |
-|-------|--------|
+| Check    | Result |
+| -------- | ------ |
 | Response | ✅ 404 |
 
 #### Booking regression
 
-| Check | Result |
-|-------|--------|
-| `/dashboard/bookings` | ✅ All bookings displayed with status badges |
-| `/dashboard/bookings?filter=confirmed` | ✅ Only confirmed bookings shown |
-| `/dashboard/bookings/b-1` | ✅ Loading skeleton (isHydrated gating), hydrates to booking detail |
+| Check                                  | Result                                                              |
+| -------------------------------------- | ------------------------------------------------------------------- |
+| `/dashboard/bookings`                  | ✅ All bookings displayed with status badges                        |
+| `/dashboard/bookings?filter=confirmed` | ✅ Only confirmed bookings shown                                    |
+| `/dashboard/bookings/b-1`              | ✅ Loading skeleton (isHydrated gating), hydrates to booking detail |
 
 #### Wishlist regression
 
-| Check | Result |
-|-------|--------|
+| Check                 | Result                                                     |
+| --------------------- | ---------------------------------------------------------- |
 | `/dashboard/wishlist` | ✅ Page renders, empty state available when no saved items |
 
 ### Responsive Verification
 
-| Viewport | Result | Notes |
-|----------|--------|-------|
-| 320px | ✅ Rating header wraps; distribution bars fit within `max-w-[280px]` | |
-| 375px | ✅ All content readable; review list scrolls naturally | |
-| 768px | ✅ Two-column layout for distribution label + bar | |
-| 1024px | ✅ Full review section width utilized | |
-| 1440px | ✅ Max-width `max-w-7xl` container keeps content centered | |
+| Viewport | Result                                                               | Notes |
+| -------- | -------------------------------------------------------------------- | ----- |
+| 320px    | ✅ Rating header wraps; distribution bars fit within `max-w-[280px]` |       |
+| 375px    | ✅ All content readable; review list scrolls naturally               |       |
+| 768px    | ✅ Two-column layout for distribution label + bar                    |       |
+| 1024px   | ✅ Full review section width utilized                                |       |
+| 1440px   | ✅ Max-width `max-w-7xl` container keeps content centered            |       |
 
 ### Console Check
 
@@ -303,8 +306,8 @@ verification.
 
 ### Typecheck / Lint / Format / Build
 
-| Check | Result |
-|-------|--------|
-| `pnpm typecheck` | ✅ No errors |
-| `pnpm lint` | ✅ No errors or warnings |
-| `pnpm format:check` | ✅ All files formatted |
+| Check               | Result                   |
+| ------------------- | ------------------------ |
+| `pnpm typecheck`    | ✅ No errors             |
+| `pnpm lint`         | ✅ No errors or warnings |
+| `pnpm format:check` | ✅ All files formatted   |

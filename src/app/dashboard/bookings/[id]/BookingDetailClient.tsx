@@ -1,24 +1,37 @@
 "use client";
 
-import { notFound } from "next/navigation";
-import { experiences } from "@/data/experiences";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useBookingStore } from "@/lib/booking-store";
+import { useCanonicalExperienceById } from "@/lib/canonical-experiences";
 import { BookingDetailView } from "@/components/domain/booking-detail-view";
 import type { Booking } from "@/data/bookings";
-import type { Experience } from "@/data/experiences";
+import type { CustomerBooking } from "@/lib/booking-store";
 
 interface BookingDetailClientProps {
   bookingId: string;
   demoBooking: Booking | undefined;
-  demoExperience: Experience | undefined;
 }
 
 export function BookingDetailClient({
   bookingId,
   demoBooking,
-  demoExperience,
 }: BookingDetailClientProps) {
+  const router = useRouter();
   const isHydrated = useBookingStore((state) => state.isHydrated);
+  const persistedBooking = useBookingStore((state) =>
+    state.getBooking(bookingId),
+  );
+  const booking = persistedBooking ?? demoBooking;
+
+  const experienceId = booking?.experienceId ?? "";
+  const { experience } = useCanonicalExperienceById(experienceId);
+
+  useEffect(() => {
+    if (isHydrated && !booking) {
+      router.replace("/dashboard/bookings");
+    }
+  }, [isHydrated, booking, router]);
 
   if (!isHydrated) {
     return (
@@ -29,16 +42,22 @@ export function BookingDetailClient({
     );
   }
 
-  const persistedBooking = useBookingStore.getState().getBooking(bookingId);
-  const booking = persistedBooking ?? demoBooking;
-  const experience =
-    (persistedBooking
-      ? experiences.find((e) => e.id === persistedBooking.experienceId)
-      : demoExperience) ?? null;
-
-  if (!booking || !experience) {
-    notFound();
+  if (!booking) {
+    return null;
   }
 
-  return <BookingDetailView booking={booking} experience={experience} />;
+  if (!experience) {
+    return (
+      <div className="text-center py-12 text-foreground-muted">
+        <p className="text-lg">تجربه مرتبط یافت نشد.</p>
+      </div>
+    );
+  }
+
+  return (
+    <BookingDetailView
+      booking={booking as Booking | CustomerBooking}
+      experience={experience}
+    />
+  );
 }

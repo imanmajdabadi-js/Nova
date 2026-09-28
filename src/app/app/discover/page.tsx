@@ -8,12 +8,15 @@ import { CloseOutlined } from "@ant-design/icons";
 import type { Experience, FilterState, SortOption } from "@/data/experiences";
 import {
   categories,
-  experiences,
   getUniqueLocations,
   getSortOptions,
   filterExperiences,
   defaultFilterState,
 } from "@/data/experiences";
+import {
+  useCanonicalExperiences,
+  filterVisibleExperiences,
+} from "@/lib/canonical-experiences";
 import { WishlistToggle } from "@/components/domain/wishlist-toggle";
 import { formatPrice } from "@/lib";
 
@@ -228,6 +231,12 @@ function DiscoverPageClient({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const { experiences: canonicalExperiences } = useCanonicalExperiences();
+
+  const visibleExperiences = useMemo(
+    () => filterVisibleExperiences(canonicalExperiences),
+    [canonicalExperiences],
+  );
 
   const [filters, setFilters] = useState<{
     search: string;
@@ -248,11 +257,14 @@ function DiscoverPageClient({
     router.replace(newUrl, { scroll: false });
   }, [filters, pathname, router]);
 
-  const locations = useMemo(() => getUniqueLocations(experiences), []);
+  const locations = useMemo(
+    () => getUniqueLocations(visibleExperiences),
+    [visibleExperiences],
+  );
 
   const filtered = useMemo(
-    () => filterExperiences(experiences, filters),
-    [filters],
+    () => filterExperiences(visibleExperiences, filters),
+    [visibleExperiences, filters],
   );
 
   const handleChange = (next: Partial<FilterState>) => {

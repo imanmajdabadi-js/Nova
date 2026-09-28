@@ -363,7 +363,7 @@ export function BookingFlow({ experience }: BookingFlowProps) {
     }
 
     // Validate booking
-    const validation = validateBooking(experience.id, session.id, guests);
+    const validation = validateBooking(experience, session, guests);
     if (!validation.valid) {
       console.warn("Booking validation failed:", validation.error);
       isConfirmingRef.current = false;
@@ -371,7 +371,7 @@ export function BookingFlow({ experience }: BookingFlowProps) {
     }
 
     // Calculate total price
-    const total = calculateBookingTotal(experience.id, guests);
+    const total = calculateBookingTotal(experience, guests);
 
     // Add booking to store
     const newBooking = useBookingStore.getState().addBooking({

@@ -1,12 +1,16 @@
-import { use } from "react";
+"use client";
+
+import { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { notFound } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { WishlistToggle } from "@/components/domain/wishlist-toggle";
 import { StarIcon } from "@/components/ui";
 import type { SVGProps } from "react";
 import type { Experience, ExperienceSession } from "@/data/experiences";
-import { experiences } from "@/data/experiences";
+import { findExperienceBySlug } from "@/data/experiences";
+import { useCanonicalExperienceBySlug } from "@/lib/canonical-experiences";
+import { statusLabels } from "@/data/experience-lifecycle";
 import { ExperienceGallery } from "./ExperienceGallery";
 import { BookingFlow } from "./BookingFlow";
 import { ReviewSection } from "./ReviewSection";
@@ -160,7 +164,6 @@ function SessionsSection({ experience }: { experience: Experience }) {
     );
   }
 
-  // Group sessions by date
   const sessionsByDate = experience.sessions.reduce(
     (acc, session) => {
       if (!acc[session.date]) {
@@ -333,18 +336,90 @@ function ExperienceContent({ experience }: { experience: Experience }) {
   );
 }
 
-export default function ExperienceDetailPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = use(params);
-  const experience = experiences.find((e) => e.slug === slug);
+function NotAvailableMessage({ experience }: { experience: Experience }) {
+  const statusLabel = statusLabels[experience.status];
+  const router = useRouter();
 
-  if (!experience) {
-    notFound();
+  useEffect(() => {
+    if (experience.status === "draft") {
+      router.replace("/app/discover");
+    }
+  }, [experience.status, router]);
+
+  if (experience.status === "draft") {
+    return (
+      <div className="min-h-screen bg-background py-12">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+          <div className="rounded-xl border border-border bg-surface p-8 text-center">
+            <h1 className="text-2xl font-bold text-foreground mb-4">
+              تجربه یافت نشد
+            </h1>
+            <p className="text-foreground-muted mb-6">
+              این تجربه در دسترس عموم مشتریان نیست.
+            </p>
+            <Link
+              href="/app/discover"
+              className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover"
+            >
+              بازگشت به کشف تجربه‌ها
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
   }
 
+  return (
+    <div className="min-h-screen bg-background py-12">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+        <nav className="mb-6 flex items-center gap-2 text-sm text-foreground-muted">
+          <Link href="/app/discover" className="hover:text-foreground">
+            کشف تجربه‌ها
+          </Link>
+          <span>/</span>
+          <span className="truncate text-foreground">
+            {experience.title || "تجربه بدون عنوان"}
+          </span>
+        </nav>
+        <div className="rounded-xl border border-border bg-surface p-8 text-center">
+          <div className="mb-6 flex justify-center">
+            <div className="rounded-full bg-info-soft p-4 text-info">
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+            </div>
+          </div>
+          <h1 className="text-2xl font-bold text-foreground mb-4">
+            {experience.title}
+          </h1>
+          <p className="text-foreground-muted mb-2">
+            این تجربه در حال حاضر در دسترس نیست.
+          </p>
+          <p className="text-sm text-foreground-muted">وضعیت: {statusLabel}</p>
+          <Link
+            href="/app/discover"
+            className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover mt-6"
+          >
+            بازگشت به کشف تجربه‌ها
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ExperienceDetailContent({ experience }: { experience: Experience }) {
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
@@ -375,4 +450,40 @@ export default function ExperienceDetailPage({
       </div>
     </div>
   );
+}
+
+export default function ExperienceDetailPage() {
+  const router = useRouter();
+  const params = useParams() as { slug?: string };
+  const slug = params?.slug ?? "";
+  const { experience: canonicalExperience, isHydrated } =
+    useCanonicalExperienceBySlug(slug);
+
+  const resolvedExperience = isHydrated
+    ? canonicalExperience
+    : (canonicalExperience ?? findExperienceBySlug(slug));
+
+  useEffect(() => {
+    if (!resolvedExperience) {
+      router.replace("/app/discover");
+    }
+  }, [resolvedExperience, router]);
+
+  if (!resolvedExperience) {
+    return (
+      <div className="min-h-screen bg-background py-12">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <p className="text-lg text-foreground-muted">تجربه یافت نشد.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (resolvedExperience.status !== "published") {
+    return <NotAvailableMessage experience={resolvedExperience} />;
+  }
+
+  return <ExperienceDetailContent experience={resolvedExperience} />;
 }

@@ -4,10 +4,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { Badge, StarIcon } from "@/components/ui";
 import { WishlistToggle } from "@/components/domain/wishlist-toggle";
-import { experiences } from "@/data/experiences";
 import { useWishlistStore } from "@/lib/wishlist-store";
+import { useCanonicalExperienceById } from "@/lib/canonical-experiences";
 import { formatPrice, cn } from "@/lib";
-import type { Experience } from "@/data/experiences";
 
 function EmptyState() {
   return (
@@ -46,12 +45,24 @@ function EmptyState() {
 }
 
 function SavedExperienceCard({
-  experience,
+  experienceId,
   index,
 }: {
-  experience: Experience;
+  experienceId: string;
   index: number;
 }) {
+  const { experience, isHydrated } = useCanonicalExperienceById(experienceId);
+
+  if (!isHydrated) {
+    return (
+      <div className="aspect-[4/3] rounded-2xl bg-surface-muted animate-pulse" />
+    );
+  }
+
+  if (!experience) {
+    return null;
+  }
+
   const formattedPrice = formatPrice(experience.price);
 
   // Featured styling for first item
@@ -128,11 +139,6 @@ function SavedExperienceCard({
 export default function WishlistPage() {
   const { savedExperienceIds, isHydrated } = useWishlistStore();
 
-  // Get saved experiences
-  const savedExperiences = savedExperienceIds
-    .map((id) => experiences.find((e) => e.id === id))
-    .filter((e): e is Experience => e !== undefined);
-
   if (!isHydrated) {
     return (
       <div className="min-h-screen bg-background pb-12">
@@ -174,12 +180,12 @@ export default function WishlistPage() {
               </p>
             </div>
             <Badge variant="primary" size="sm">
-              {savedExperiences.length} تجربه ذخیره‌شده
+              {savedExperienceIds.length} تجربه ذخیره‌شده
             </Badge>
           </div>
         </header>
 
-        {savedExperiences.length === 0 ? (
+        {savedExperienceIds.length === 0 ? (
           <EmptyState />
         ) : (
           <div
@@ -188,10 +194,10 @@ export default function WishlistPage() {
               gridAutoFlow: "dense",
             }}
           >
-            {savedExperiences.map((experience, index) => (
+            {savedExperienceIds.map((experienceId, index) => (
               <SavedExperienceCard
-                key={experience.id}
-                experience={experience}
+                key={experienceId}
+                experienceId={experienceId}
                 index={index}
               />
             ))}

@@ -6,10 +6,9 @@ import {
   type BookingFilter,
 } from "@/components/domain/booking-tabs";
 import { BookingCard } from "@/components/domain/booking-card";
-import { experiences } from "@/data/experiences";
+import { useCanonicalExperiences } from "@/lib/canonical-experiences";
 import { statusOrder } from "@/data/bookings";
 import type { Booking } from "@/data/bookings";
-import type { Experience } from "@/data/experiences";
 import type { CustomerBooking } from "@/lib/booking-store";
 
 type DisplayBooking = Booking | CustomerBooking;
@@ -28,10 +27,6 @@ function filterBookings(
   return [...bookings].filter((b) => b.status === filter);
 }
 
-function findExperience(id: string): Experience | undefined {
-  return experiences.find((e) => e.id === id);
-}
-
 export function BookingsList({
   bookings,
   initialFilter,
@@ -42,6 +37,7 @@ export function BookingsList({
   onFilterChange?: (filter: BookingFilter) => void;
 }) {
   const [filter, setFilter] = useState<BookingFilter>(initialFilter);
+  const { experiences: canonicalExperiences } = useCanonicalExperiences();
   const filtered = filterBookings(bookings, filter);
 
   const handleFilterChange = (next: BookingFilter) => {
@@ -63,7 +59,9 @@ export function BookingsList({
       ) : (
         <div className="space-y-4">
           {filtered.map((booking) => {
-            const experience = findExperience(booking.experienceId);
+            const experience = canonicalExperiences.find(
+              (e) => e.id === booking.experienceId,
+            );
             if (!experience) return null;
             return (
               <BookingCard

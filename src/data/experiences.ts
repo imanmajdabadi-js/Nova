@@ -5,6 +5,8 @@ export type ExperienceSession = {
   readonly remainingCapacity: number;
 };
 
+export type ExperienceStatus = "draft" | "published" | "paused";
+
 export type Experience = {
   readonly id: string;
   readonly title: string;
@@ -25,6 +27,10 @@ export type Experience = {
     readonly avatar?: string;
     readonly bio?: string;
   };
+  readonly hostId: string;
+  readonly status: ExperienceStatus;
+  readonly createdAt: string;
+  readonly updatedAt: string;
   readonly reviewSummary?: {
     readonly text: string;
     readonly author: string;
@@ -83,12 +89,12 @@ export const experiences: readonly Experience[] = [
     date: "هر جمعه",
     availability: "ظرفیت ۸ نفر",
     description:
-      "یک تجربه‌ی آشپزی اصیل در باغ نیاوران. شما یاد می‌گیرید غذاهای سنتی ایرانی را با موادfresh و تازه درست کنید. این کلاس برای علاقه‌مندان به آشپزی و کسانی که می‌خواهند فرهنگ آشپزی ایران را از نزدیک تجربه کنند، طراحی شده است.",
+      "یک تجربه‌ی آشپزی اصیل در باغ نیاوران. شما یاد می‌گیرید غذاهای سنتی ایرانی را با مواد تازه و فصلی درست کنید. این کلاس برای علاقه‌مندان به آشپزی و کسانی که می‌خواهند فرهنگ آشپزی ایران را از نزدیک تجربه کنند، طراحی شده است.",
     highlights: [
       "آشپزی با یک سرآشپز بومی",
-      "استفاده از موادfresh و فصل",
-      "گرفتن دستور العمل برای استفاده در منزل",
-      "غذا با همسفران و میزبان",
+      "استفاده از مواد تازه و فصلی",
+      "گرفتن دستور العمل‌ برای استفاده در منزل",
+      "غذایی دلپذیر با همسفران و میزبان",
     ],
     host: {
       name: "مریم احمدی",
@@ -96,6 +102,10 @@ export const experiences: readonly Experience[] = [
         "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80",
       bio: "سرآشپز با ۱۵ سال تجربه در آشپزی سنتی و مدرن ایرانی",
     },
+    hostId: "h1",
+    status: "published",
+    createdAt: "۱۴۰۴/۰۱/۱۵",
+    updatedAt: "۱۴۰۵/۰۷/۱۵",
     reviewSummary: {
       text: "بیشترین تجربه‌ی خوبی که داشته‌ام. مریم فوق‌العاده است.",
       author: "علی ر.",
@@ -133,19 +143,23 @@ export const experiences: readonly Experience[] = [
     date: "هر روز",
     availability: "ظرفیت ۱۵ نفر",
     description:
-      "یک تور guid شده از نقاط پنهان اصفهان. از کوچه‌های قدیمی تا کارگاه‌های سنتی، این تور شما را با چهره‌ی واقعی اصفهان آشنا می‌کند.",
+      "یک تور راهنمایی‌شده از نقاط پنهان اصفهان. از کوچه‌های قدیمی تا کارگاه‌های سنتی، این تور شما را با چهره‌ی واقعی اصفهان آشنا می‌کند.",
     highlights: [
-      "راهبری توسط Guide بومی",
+      "راهنمایی توسط راهنمای بومی",
       "دیدن نقاط پنهان",
-      "عکاسی در locations منحصربه‌فرد",
-      "گرفتنی از سوغات محلی",
+      "عکاسی در مکان‌های منحصربه‌فرد",
+      "خرید از سوغات محلی",
     ],
     host: {
       name: "رضا کریمی",
       avatar:
         "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80",
-      bio: "Guide و مورخ با ۱۰ سال تجربه در تورهای شهری اصفهان",
+      bio: "راهنما و مورخ با ۱۰ سال تجربه در تورهای شهری اصفهان",
     },
+    hostId: "h2",
+    status: "published",
+    createdAt: "۱۴۰۴/۰۲/۲۰",
+    updatedAt: "۱۴۰۵/۰۷/۰۶",
     reviewSummary: {
       text: "تور فوق‌العاده بود. نقاطی را دیدم که اگر خودم بروم هرگز پیدا نمی‌کردم.",
       author: "مریم ک.",
@@ -182,11 +196,11 @@ export const experiences: readonly Experience[] = [
     date: "شنبه‌ها",
     availability: "ظرفیت ۱۰ نفر",
     description:
-      "یادگیری ساخت گلیم دستباف با هنرمندان کرمان. شما در این workshop اصول بافت گلیم را یاد می‌گیرید و می‌توانید خودتان یک گلیم کوچک بسازید.",
+      "یادگیری ساخت گلیم دستباف با هنرمندان کرمان. شما در این کارگاه اصول بافت گلیم را یاد می‌گیرید و می‌توانید خودتان یک گلیم کوچک بسازید.",
     highlights: [
       "آموزش اصول بافت",
       "استفاده از نخ‌های طبیعی",
-      "گرفتنی از اثر خودتان",
+      "گرفتن اثر خودتان",
       "معرفی تاریخچه گلیم",
     ],
     host: {
@@ -195,6 +209,10 @@ export const experiences: readonly Experience[] = [
         "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80",
       bio: "هنرمند گلیم‌باف با ۲۰ سال تجربه",
     },
+    hostId: "h3",
+    status: "paused",
+    createdAt: "۱۴۰۴/۰۳/۱۰",
+    updatedAt: "۱۴۰۵/۰۷/۱۵",
     reviewSummary: {
       text: "تجربه‌ای فوق‌العاده و آموزنده. فاطمه معلمی عالی است.",
       author: "سارا م.",
@@ -234,8 +252,8 @@ export const experiences: readonly Experience[] = [
     highlights: [
       "اجرای گروه‌های محلی",
       "فضای باغ ارم",
-      "پذیرایی و چای",
-      "قابلیت покуشی",
+      "پذیرایی از چای",
+      "ورود آزاد",
     ],
     host: {
       name: "سید محمد حسینی",
@@ -243,6 +261,10 @@ export const experiences: readonly Experience[] = [
         "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&q=80",
       bio: "مدیر فرهنگی و برنامه‌ریز کنسرت‌های سنتی",
     },
+    hostId: "h4",
+    status: "published",
+    createdAt: "۱۴۰۳/۱۱/۱۵",
+    updatedAt: "۱۴۰۵/۰۷/۰۸",
     reviewSummary: {
       text: "فضای باغ ارم با موسیقی سنتی... معجزه است.",
       author: "امیر ح.",
@@ -280,17 +302,21 @@ export const experiences: readonly Experience[] = [
     description:
       "یک روز کوهنوردی در رشته‌کوه البرز با راهبری Guide مجرب. این تور برای علاقه‌مندان به طبیعت و کوهنوردی مناسب است.",
     highlights: [
-      "راهبری Guide مجرب",
-      "منظره‌های دیدنی",
+      "راهنمایی با راهنمای مجرب",
+      "مناظر دیدنی",
       "غذای محلی در مسیر",
-      "گرفتنی از خاطرات",
+      "گرفتن یادآوری از ماجراها",
     ],
     host: {
       name: "حسین رضایی",
       avatar:
         "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80",
-      bio: "کوهنورد و Guide با ۸ سال تجربه",
+      bio: "کوهنورد و راهنما با ۸ سال تجربه",
     },
+    hostId: "h5",
+    status: "published",
+    createdAt: "۱۴۰۴/۰۳/۰۵",
+    updatedAt: "۱۴۰۵/۰۷/۰۷",
     reviewSummary: {
       text: "تور عالی بود. حسین معلمی خوبی بود و مسیر بسیار زیبا بود.",
       author: "نیما ت.",
@@ -339,6 +365,10 @@ export const experiences: readonly Experience[] = [
         "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&q=80",
       bio: "هنرمند خاتم‌کار با ۲۵ سال تجربه",
     },
+    hostId: "h6",
+    status: "draft",
+    createdAt: "۱۴۰۵/۰۶/۰۱",
+    updatedAt: "۱۴۰۵/۰۷/۱۰",
     reviewSummary: {
       text: "کارگاه عالی. علی استاد خوبی است و فضای کارگاه بسیار دوستانه است.",
       author: "رضا پ.",
@@ -376,16 +406,20 @@ export const experiences: readonly Experience[] = [
       "غواصی و اسنورکلینگ در آب‌های زیبای کیش. این تجربه برای علاقه‌مندان به دنیای زیر آب و ماهی‌های رنگارنگ مناسب است.",
     highlights: [
       "تجهیزات رایگان",
-      "راهبری instructor مجرب",
-      "منظره‌های زیر آب",
+      "راهنمایی با مربی مجرب",
+      "مناظر زیر آب",
       "عکاسی زیر آب",
     ],
     host: {
       name: "امید بحرانی",
       avatar:
         "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&q=80",
-      bio: "Instructor غواصی با ۱۲ سال تجربه",
+      bio: "مربی غواصی با ۱۲ سال تجربه",
     },
+    hostId: "h7",
+    status: "published",
+    createdAt: "۱۴۰۴/۱۰/۰۲",
+    updatedAt: "۱۴۰۵/۰۷/۱۴",
     reviewSummary: {
       text: "تجربه‌ای فوق‌العاده. امید عالی بود.",
       author: "پارسا ر.",
@@ -421,12 +455,12 @@ export const experiences: readonly Experience[] = [
     date: "تا ۱۵ دی",
     availability: "بازدید آزاد",
     description:
-      "نمایشگاه عکس گروهی از عکاسان معاصر تهران. این نمایشگاه蛇های زیبا و دیدنی از شهر تهران را به نمایش می‌گذارد.",
+      "نمایشگاه عکس گروهی از عکاسان معاصر تهران. این نمایشگاه شهر تهران را از زوایای نگاه‌نشده به نمایش می‌گذارد.",
     highlights: [
-      "عکس‌هایungi از تهران",
+      "عکس‌های زیبا از تهران",
       "حضور عکاسان",
-      "جلسه‌ی پرسش و پاسخ",
-      "گرفتنی از کاتالوگ",
+      "جلسه پرسش و پاسخ",
+      "گرفتن کاتالوگ",
     ],
     host: {
       name: "عکس‌خانه تهران",
@@ -434,6 +468,10 @@ export const experiences: readonly Experience[] = [
         "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=200&q=80",
       bio: "فضای فرهنگی برای نمایش آثار عکاسان معاصر",
     },
+    hostId: "h8",
+    status: "published",
+    createdAt: "۱۴۰۴/۰۸/۱۵",
+    updatedAt: "۱۴۰۵/۰۷/۱۶",
     reviewSummary: {
       text: "نمایشگاه بسیار خوب بود. عکس‌های واقعاً زیبایی بود.",
       author: "کیمیا ه.",
@@ -547,26 +585,26 @@ export function findExperienceById(id: string): Experience | undefined {
   return experiences.find((e) => e.id === id);
 }
 
+export function findExperiencesByHost(hostId: string): Experience[] {
+  return experiences.filter((e) => e.hostId === hostId);
+}
+
+export function findExperienceBySlug(slug: string): Experience | undefined {
+  return experiences.find((e) => e.slug === slug);
+}
+
 export function findSessionById(
-  experienceId: string,
+  experience: Experience,
   sessionId: string,
 ): ExperienceSession | undefined {
-  const experience = findExperienceById(experienceId);
-  if (!experience) return undefined;
   return experience.sessions.find((s) => s.id === sessionId);
 }
 
 export function validateBooking(
-  experienceId: string,
-  sessionId: string,
+  experience: Experience,
+  session: ExperienceSession,
   guestCount: number,
 ): { valid: boolean; error?: string } {
-  const experience = findExperienceById(experienceId);
-  if (!experience) {
-    return { valid: false, error: "تجربه یافت نشد" };
-  }
-
-  const session = findSessionById(experienceId, sessionId);
   if (!session) {
     return { valid: false, error: "جلسه یافت نشد" };
   }
@@ -587,10 +625,8 @@ export function validateBooking(
 }
 
 export function calculateBookingTotal(
-  experienceId: string,
+  experience: Experience,
   guestCount: number,
 ): number {
-  const experience = findExperienceById(experienceId);
-  if (!experience) return 0;
   return experience.price * guestCount;
 }

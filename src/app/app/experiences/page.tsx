@@ -1,9 +1,17 @@
+"use client";
+
 import Link from "next/link";
 import { Card, CardBody, StarIcon } from "@/components/ui";
-import { experiences } from "@/data/experiences";
+import {
+  useCanonicalExperiences,
+  filterVisibleExperiences,
+} from "@/lib/canonical-experiences";
 import { formatPrice } from "@/lib";
 
 export default function ExperiencesPage() {
+  const { experiences: canonicalExperiences } = useCanonicalExperiences();
+  const visibleExperiences = filterVisibleExperiences(canonicalExperiences);
+
   return (
     <div className="space-y-8">
       <section className="space-y-4">
@@ -15,41 +23,47 @@ export default function ExperiencesPage() {
         </p>
       </section>
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {experiences.map((experience) => (
-          <Link
-            key={experience.id}
-            href={`/app/experiences/${experience.slug}`}
-          >
-            <Card hoverable className="h-full">
-              <CardBody>
-                <div className="space-y-3">
-                  <div className="flex items-start justify-between gap-2">
-                    <h3 className="text-base font-semibold text-foreground leading-snug">
-                      {experience.title}
-                    </h3>
-                    <div className="flex items-center gap-1 text-sm text-foreground-muted">
-                      <StarIcon className="text-warning" />
-                      <span>{experience.rating}</span>
+      {visibleExperiences.length === 0 ? (
+        <div className="py-16 text-center text-foreground-muted">
+          <p className="text-lg">هیچ تجربه‌ای در دسترس نیست.</p>
+        </div>
+      ) : (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {visibleExperiences.map((experience) => (
+            <Link
+              key={experience.id}
+              href={`/app/experiences/${experience.slug}`}
+            >
+              <Card hoverable className="h-full">
+                <CardBody>
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <h3 className="text-base font-semibold text-foreground leading-snug">
+                        {experience.title}
+                      </h3>
+                      <div className="flex items-center gap-1 text-sm text-foreground-muted">
+                        <StarIcon className="text-warning" />
+                        <span>{experience.rating}</span>
+                      </div>
+                    </div>
+                    <p className="text-sm text-foreground-muted">
+                      {experience.location}
+                    </p>
+                    <div className="flex items-center justify-between pt-2 border-t border-border">
+                      <span className="text-sm text-foreground-subtle">
+                        {experience.reviews} نظر
+                      </span>
+                      <span className="text-base font-semibold text-foreground">
+                        {formatPrice(experience.price)}
+                      </span>
                     </div>
                   </div>
-                  <p className="text-sm text-foreground-muted">
-                    {experience.location}
-                  </p>
-                  <div className="flex items-center justify-between pt-2 border-t border-border">
-                    <span className="text-sm text-foreground-subtle">
-                      {experience.reviews} نظر
-                    </span>
-                    <span className="text-base font-semibold text-foreground">
-                      {formatPrice(experience.price)}
-                    </span>
-                  </div>
-                </div>
-              </CardBody>
-            </Card>
-          </Link>
-        ))}
-      </div>
+                </CardBody>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

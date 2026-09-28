@@ -24,6 +24,20 @@ export { useWishlistStore } from "./wishlist-store";
 export { useBookingStore } from "./booking-store";
 export type { CustomerBooking } from "./booking-store";
 
+export { useHostExperiencesStore } from "./host-experiences-store";
+export type { ExperiencePatch } from "./host-experiences-store";
+export { applyPatch } from "./host-experiences-store";
+
+export {
+  useCanonicalExperiences,
+  useCanonicalExperienceById,
+  useCanonicalExperienceBySlug,
+  useCanonicalSession,
+  filterVisibleExperiences,
+  isExperienceBookable,
+  visibleStatuses,
+} from "./canonical-experiences";
+
 export {
   findExperienceById,
   findSessionById,
