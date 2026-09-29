@@ -31,11 +31,12 @@ import { useTheme } from "@/components/providers/nova-theme-provider";
 import {
   palette,
   semantic,
-  type SemanticName,
+  type ColorScale,
   type ColorName,
+  type SemanticName,
 } from "@/styles/tokens";
 
-type SwatchScale = { name: string; colors: Record<string, string> };
+type SwatchScale = { name: string; colors: ColorScale };
 
 function ColorSwatch({ label, value }: { label: string; value: string }) {
   return (
@@ -53,33 +54,18 @@ function ColorSwatch({ label, value }: { label: string; value: string }) {
 }
 
 const brandScales: SwatchScale[] = [
-  {
-    name: "primary (teal)",
-    colors: palette.primary as unknown as Record<string, string>,
-  },
-  {
-    name: "secondary (amber)",
-    colors: palette.secondary as unknown as Record<string, string>,
-  },
-  {
-    name: "accent (rose)",
-    colors: palette.accent as unknown as Record<string, string>,
-  },
-  {
-    name: "success",
-    colors: palette.success as unknown as Record<string, string>,
-  },
-  {
-    name: "warning",
-    colors: palette.warning as unknown as Record<string, string>,
-  },
-  { name: "error", colors: palette.error as unknown as Record<string, string> },
-  { name: "info", colors: palette.info as unknown as Record<string, string> },
+  { name: "primary (teal)", colors: palette.primary },
+  { name: "secondary (amber)", colors: palette.secondary },
+  { name: "accent (rose)", colors: palette.accent },
+  { name: "success", colors: palette.success },
+  { name: "warning", colors: palette.warning },
+  { name: "error", colors: palette.error },
+  { name: "info", colors: palette.info },
 ];
 
 const neutralSwatch: SwatchScale = {
   name: "neutral",
-  colors: palette.neutral as unknown as Record<string, string>,
+  colors: palette.neutral,
 };
 const colorNames: ColorName[] = [
   "50",
