@@ -65,7 +65,6 @@ function SavedExperienceCard({
 
   const formattedPrice = formatPrice(experience.price);
 
-  // Featured styling for first item
   const isFeatured = index === 0;
 
   return (

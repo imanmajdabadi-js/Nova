@@ -1,4 +1,5 @@
-import { type LabelHTMLAttributes, forwardRef, useId } from "react";
+import { type LabelHTMLAttributes } from "react";
+import { forwardRef } from "react";
 import { cn } from "@/lib";
 
 export interface LabelProps extends LabelHTMLAttributes<HTMLLabelElement> {
@@ -27,5 +28,3 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(function Label(
 });
 
 Label.displayName = "Label";
-
-export const useFieldId = useId;

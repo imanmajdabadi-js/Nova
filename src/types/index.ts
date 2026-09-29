@@ -1,5 +1,3 @@
-// Foundation type definitions for NOVA.
-
 export type Locale = "fa";
 
 export interface AppLocaleConfig {

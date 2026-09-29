@@ -245,7 +245,6 @@ function DiscoverPageClient({
     sort: SortOption;
   }>(initialFilters);
 
-  // Sync filters to URL
   useEffect(() => {
     const params = new URLSearchParams();
     if (filters.search) params.set("q", filters.search);

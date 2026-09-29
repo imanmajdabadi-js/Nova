@@ -1,5 +1,3 @@
-// Shared library utilities for NOVA.
-
 export function cn(
   ...inputs: Array<string | false | null | undefined>
 ): string {
@@ -11,6 +9,7 @@ export function cn(
 }
 
 export { usePathname } from "./use-pathname";
+export { getPersianDate } from "./i18n";
 
 export function formatPriceFa(price: number): string {
   return new Intl.NumberFormat("fa-IR").format(price);

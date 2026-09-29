@@ -14,7 +14,7 @@ export type { InputProps } from "./input";
 export { Textarea } from "./textarea";
 export type { TextareaProps } from "./textarea";
 
-export { Label, useFieldId } from "./label";
+export { Label } from "./label";
 export type { LabelProps } from "./label";
 
 export { Badge } from "./badge";

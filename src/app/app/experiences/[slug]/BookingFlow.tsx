@@ -288,6 +288,7 @@ export function BookingFlow({ experience }: BookingFlowProps) {
     useState<ExperienceSession | null>(null);
   const [guestCount, setGuestCount] = useState(1);
   const [bookingRef, setBookingRef] = useState<string | null>(null);
+  const [bookingError, setBookingError] = useState<string | null>(null);
   const isConfirmingRef = useRef(false);
 
   const selection: BookingSelection = useMemo(
@@ -362,18 +363,16 @@ export function BookingFlow({ experience }: BookingFlowProps) {
       return;
     }
 
-    // Validate booking
     const validation = validateBooking(experience, session, guests);
     if (!validation.valid) {
-      console.warn("Booking validation failed:", validation.error);
+      setBookingError(validation.error ?? null);
       isConfirmingRef.current = false;
       return;
     }
 
-    // Calculate total price
+    setBookingError(null);
     const total = calculateBookingTotal(experience, guests);
 
-    // Add booking to store
     const newBooking = useBookingStore.getState().addBooking({
       experienceId: experience.id,
       sessionId: session.id,
@@ -394,6 +393,7 @@ export function BookingFlow({ experience }: BookingFlowProps) {
     setSelectedSession(null);
     setGuestCount(1);
     setBookingRef(null);
+    setBookingError(null);
     setStep("initial");
   };
 
@@ -483,14 +483,21 @@ export function BookingFlow({ experience }: BookingFlowProps) {
         )}
 
         {step === "summary" && (
-          <Button
-            variant="primary"
-            size="lg"
-            className="w-full"
-            onClick={handleConfirm}
-          >
-            تأیید و رزرو
-          </Button>
+          <>
+            {bookingError && (
+              <div className="mb-3 rounded-lg border border-error bg-error-soft px-4 py-3 text-sm text-error">
+                {bookingError}
+              </div>
+            )}
+            <Button
+              variant="primary"
+              size="lg"
+              className="w-full"
+              onClick={handleConfirm}
+            >
+              تأیید و رزرو
+            </Button>
+          </>
         )}
       </div>
 
