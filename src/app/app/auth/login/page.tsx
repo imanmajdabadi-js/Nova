@@ -1,8 +1,16 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Button, Input, Label } from "@/components/ui";
 
 export default function LoginPage() {
+  const router = useRouter();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    router.replace("/app/discover");
+  };
+
   return (
     <div className="mx-auto max-w-md space-y-8">
       <div className="space-y-2 text-center">
@@ -13,7 +21,7 @@ export default function LoginPage() {
           برای ادامه وارد حساب کاربری خود شوید.
         </p>
       </div>
-      <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+      <form className="space-y-6" onSubmit={handleSubmit}>
         <div className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">ایمیل</Label>

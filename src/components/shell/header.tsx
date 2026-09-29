@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button, IconButton } from "@/components/ui";
 import { MoonOutlined, SunOutlined } from "@ant-design/icons";
 import { useTheme } from "@/components/providers/nova-theme-provider";
@@ -14,6 +15,7 @@ interface HeaderProps {
 
 export function Header({ navigation, currentPath }: HeaderProps) {
   const { mode, toggleTheme } = useTheme();
+  const router = useRouter();
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-surface/80 backdrop-blur-sm">
@@ -60,7 +62,12 @@ export function Header({ navigation, currentPath }: HeaderProps) {
             onClick={toggleTheme}
             className="hidden sm:inline-flex"
           />
-          <Button variant="primary" size="sm" className="hidden sm:inline-flex">
+          <Button
+            variant="primary"
+            size="sm"
+            className="hidden sm:inline-flex"
+            onClick={() => router.push("/app/auth/login")}
+          >
             ورود
           </Button>
         </div>

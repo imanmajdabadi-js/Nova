@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { IconButton } from "@/components/ui";
-import { MenuOutlined } from "@ant-design/icons";
 import { cn } from "@/lib";
 import type { NavItem } from "@/config/navigation";
 
@@ -36,12 +34,6 @@ export function MobileNav({ navigation, currentPath }: MobileNavProps) {
               </Link>
             );
           })}
-          <IconButton
-            label="منو"
-            icon={<MenuOutlined />}
-            variant="ghost"
-            size="sm"
-          />
         </div>
       </div>
     </div>
