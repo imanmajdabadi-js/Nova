@@ -33,11 +33,17 @@ export type Experience = {
 };
 
 export type SortOption =
-  "featured" | "popular" | "newest" | "price-asc" | "price-desc";
+  | "featured"
+  | "popular"
+  | "newest"
+  | "price-asc"
+  | "price-desc"
+  | "rating-desc";
 
 export type FilterState = {
   readonly search: string;
   readonly category: string;
+  readonly location: string;
   readonly sort: SortOption;
 };
 
@@ -386,3 +392,90 @@ export const experiences: readonly Experience[] = [
     ],
   },
 ];
+
+export function normalizePersianText(text: string): string {
+  return text
+    .replace(/ي/g, "ی")
+    .replace(/ك/g, "ک")
+    .replace(/ٔ/g, "")
+    .replace(/َ|ُ|ِ|ّ|ْ|ً|ٌ|ٍ/g, "")
+    .trim();
+}
+
+export function filterExperiences(
+  experiences: readonly Experience[],
+  filter: FilterState,
+): Experience[] {
+  let result = [...experiences];
+
+  if (filter.category !== "همه") {
+    result = result.filter((e) => e.category === filter.category);
+  }
+
+  if (filter.location !== "همه") {
+    result = result.filter((e) => e.location === filter.location);
+  }
+
+  if (filter.search.trim()) {
+    const q = normalizePersianText(filter.search.trim().toLowerCase());
+    result = result.filter(
+      (e) =>
+        normalizePersianText(e.title.toLowerCase()).includes(q) ||
+        normalizePersianText(e.location.toLowerCase()).includes(q) ||
+        normalizePersianText(e.category.toLowerCase()).includes(q) ||
+        (e.description &&
+          normalizePersianText(e.description.toLowerCase()).includes(q)) ||
+        (e.host && normalizePersianText(e.host.name.toLowerCase()).includes(q)),
+    );
+  }
+
+  switch (filter.sort) {
+    case "popular":
+      result.sort((a, b) => b.reviews - a.reviews);
+      break;
+    case "newest":
+      result.sort((a, b) => b.id.localeCompare(a.id));
+      break;
+    case "price-asc":
+      result.sort((a, b) => a.price - b.price);
+      break;
+    case "price-desc":
+      result.sort((a, b) => b.price - a.price);
+      break;
+    case "rating-desc":
+      result.sort((a, b) => b.rating - a.rating);
+      break;
+    case "featured":
+    default:
+      break;
+  }
+
+  return result;
+}
+
+export function getUniqueLocations(
+  experiences: readonly Experience[],
+): string[] {
+  return ["همه", ...new Set(experiences.map((e) => e.location))].sort();
+}
+
+export function getSortOptions(): readonly {
+  value: SortOption;
+  label: string;
+}[] {
+  return [
+    { value: "featured", label: "پیشنهاد NOVA" },
+    { value: "popular", label: "محبوب‌ترین" },
+    { value: "rating-desc", label: "بیشترین امتیاز" },
+    { value: "price-asc", label: "ارزان‌ترین" },
+    { value: "price-desc", label: "گران‌ترین" },
+    { value: "newest", label: "جدیدترین" },
+  ] as const;
+}
+
+export const defaultFilterState: FilterState = {
+  search: "",
+  category: "همه",
+  location: "همه",
+  sort: "featured",
+};
