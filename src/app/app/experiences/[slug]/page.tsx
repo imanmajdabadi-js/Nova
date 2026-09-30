@@ -2,13 +2,13 @@ import { use } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { IconButton } from "@/components/ui";
 import { WishlistToggle } from "@/components/domain/wishlist-toggle";
 import type { SVGProps } from "react";
-import type { Experience } from "@/data/experiences";
+import type { Experience, ExperienceSession } from "@/data/experiences";
 import { experiences } from "@/data/experiences";
 import { ExperienceGallery } from "./ExperienceGallery";
 import { BookingFlow } from "./BookingFlow";
+import { formatPriceFa } from "@/lib";
 
 function StarIcon(props: SVGProps<SVGSVGElement>) {
   return (
@@ -24,22 +24,69 @@ function StarIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-function HeartIcon(props: SVGProps<SVGSVGElement>) {
+function CalendarIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
-      viewBox="0 0 1024 1024"
-      width={20}
-      height={20}
-      fill="currentColor"
+      viewBox="0 0 24 24"
+      width={18}
+      height={18}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
       {...props}
     >
-      <path d="M512 922.8c-15.4-13.8-594-526.6-594-526.6S74.2 312.2 74.2 182.4 185.6 74.4 300.8 74.4s222.8 101 211.2 225.2C598.4 185.4 646.8 74.4 762.4 74.4s228.8 107.2 228.8 228.8S676.2 385.4 512 922.8z" />
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+      <line x1="16" y1="2" x2="16" y2="6" />
+      <line x1="8" y1="2" x2="8" y2="6" />
+      <line x1="3" y1="10" x2="21" y2="10" />
+    </svg>
+  );
+}
+
+function ClockIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={18}
+      height={18}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <circle cx="12" cy="12" r="10" />
+      <polyline points="12 6 12 12 16 14" />
+    </svg>
+  );
+}
+
+function UsersIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={18}
+      height={18}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
     </svg>
   );
 }
 
 function formatPrice(price: number): string {
-  return new Intl.NumberFormat("fa-IR").format(price) + " تومان";
+  return formatPriceFa(price) + " تومان";
 }
 
 function ExperienceHeader({ experience }: { experience: Experience }) {
@@ -60,7 +107,10 @@ function ExperienceHeader({ experience }: { experience: Experience }) {
               <span>({experience.reviews} نظر)</span>
             </span>
             <span>·</span>
-            <span>{experience.location}</span>
+            <span className="flex items-center gap-1">
+              <span>📍</span>
+              <span>{experience.location}</span>
+            </span>
           </div>
         </div>
         <WishlistToggle
@@ -73,7 +123,109 @@ function ExperienceHeader({ experience }: { experience: Experience }) {
   );
 }
 
+function SessionInfo({
+  session,
+  isAvailable,
+}: {
+  session: ExperienceSession;
+  isAvailable: boolean;
+}) {
+  return (
+    <div
+      className={`flex items-center gap-3 rounded-lg border p-4 transition-colors ${isAvailable ? "border-border bg-surface hover:border-border-strong hover:bg-surface-interactive" : "border-border/50 bg-surface/50 opacity-60"}`}
+    >
+      <div className="flex flex-col items-center gap-1 shrink-0 w-16 rounded-lg bg-primary-soft p-3 text-primary text-center">
+        <CalendarIcon className="w-5 h-5" />
+        <span className="text-xs font-medium">{session.date}</span>
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 text-sm">
+          <ClockIcon className="w-4 h-4 text-foreground-muted shrink-0" />
+          <span className="font-medium text-foreground truncate">
+            {session.time}
+          </span>
+          {isAvailable ? (
+            <span className="inline-flex items-center gap-1 rounded-full bg-success-soft px-2 py-0.5 text-xs font-medium text-success">
+              <UsersIcon className="w-3 h-3" />
+              {session.remainingCapacity} جای خالی
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1 rounded-full bg-error-soft px-2 py-0.5 text-xs font-medium text-error">
+              تکمیل شده
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SessionsSection({ experience }: { experience: Experience }) {
+  if (!experience.sessions || experience.sessions.length === 0) {
+    return (
+      <section className="space-y-4">
+        <h2 className="text-2xl font-semibold text-foreground">جلسات موجود</h2>
+        <div className="rounded-xl border border-border bg-surface p-6 text-center text-foreground-muted">
+          <CalendarIcon className="mx-auto w-12 h-12 text-foreground-muted/30 mb-3" />
+          <p className="text-lg">
+            هیچ جلسه‌ای برای این تجربه برنامه‌ریزی نشده است.
+          </p>
+          <p className="mt-1 text-sm">به‌روزرسانی‌ها را پیگیری کنید.</p>
+        </div>
+      </section>
+    );
+  }
+
+  // Group sessions by date
+  const sessionsByDate = experience.sessions.reduce(
+    (acc, session) => {
+      if (!acc[session.date]) {
+        acc[session.date] = [];
+      }
+      acc[session.date].push(session);
+      return acc;
+    },
+    {} as Record<string, ExperienceSession[]>,
+  );
+
+  const sortedDates = Object.keys(sessionsByDate).sort();
+
+  return (
+    <section className="space-y-4">
+      <h2 className="text-2xl font-semibold text-foreground">جلسات موجود</h2>
+      <p className="text-sm text-foreground-muted">
+        تاریخ و ساعت را انتخاب کنید و سپس در پنل رزرو ثبت‌نام کنید.
+      </p>
+      <div className="space-y-6">
+        {sortedDates.map((date) => (
+          <div key={date} className="space-y-3">
+            <div className="flex items-center gap-2 text-sm text-foreground-muted">
+              <CalendarIcon className="w-4 h-4 shrink-0" />
+              <span className="font-medium text-foreground">{date}</span>
+              <span className="text-foreground-muted">
+                ({sessionsByDate[date].length} جلسه)
+              </span>
+            </div>
+            <div className="space-y-2">
+              {sessionsByDate[date].map((session) => (
+                <SessionInfo
+                  key={session.id}
+                  session={session}
+                  isAvailable={session.remainingCapacity > 0}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function BookingPanel({ experience }: { experience: Experience }) {
+  const hasAvailableSessions =
+    experience.sessions?.some((s) => s.remainingCapacity > 0) ?? false;
+
   return (
     <div className="sticky top-20 space-y-4 rounded-xl border border-border bg-surface p-6 shadow-subtle">
       <div className="space-y-1">
@@ -87,24 +239,41 @@ function BookingPanel({ experience }: { experience: Experience }) {
 
       <div className="space-y-3 border-t border-border pt-4">
         <div className="flex items-center justify-between text-sm">
-          <span className="text-foreground-muted">تاریخ</span>
+          <span className="text-foreground-muted">تاریخ تجربه</span>
           <span className="font-medium text-foreground">
-            {experience.date || "نامشخص"}
+            {experience.date || "متغیر (بیشتر در جلسات)"}
           </span>
         </div>
         <div className="flex items-center justify-between text-sm">
-          <span className="text-foreground-muted">ظرفیت</span>
+          <span className="text-foreground-muted">ظرفیت کل</span>
           <span className="font-medium text-foreground">
-            {experience.availability || "نامشخص"}
+            {experience.availability || "متغیر"}
           </span>
         </div>
       </div>
 
-      <BookingFlow experience={experience} />
-
-      <p className="text-center text-xs text-foreground-subtle">
-        رزرو آنلاین امن با پشتیبانی ۲۴/۷
-      </p>
+      {hasAvailableSessions ? (
+        <>
+          <div className="border-t border-border pt-4">
+            <p className="text-sm text-foreground-muted mb-3">
+              جلسه را در پایین انتخاب کرده و اینجا رزرو کنید.
+            </p>
+            <BookingFlow experience={experience} />
+          </div>
+          <p className="text-center text-xs text-foreground-subtle">
+            رزرو آنلاین امن با پشتیبانی ۲۴/۷
+          </p>
+        </>
+      ) : (
+        <div className="border-t border-border pt-4 text-center">
+          <p className="text-sm text-foreground-muted mb-3">
+            در حال حاضر جلسه‌ای با جای خالی وجود ندارد.
+          </p>
+          <p className="text-xs text-foreground-subtle">
+            لطفاً بعداً مراجعه کنید.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
@@ -137,6 +306,8 @@ function ExperienceContent({ experience }: { experience: Experience }) {
           </ul>
         </section>
       )}
+
+      <SessionsSection experience={experience} />
 
       {experience.host && (
         <section className="space-y-4">
