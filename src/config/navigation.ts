@@ -18,4 +18,5 @@ export const authNavigation: readonly NavItem[] = [
 export const appNavigation: readonly NavItem[] = [
   ...publicNavigation,
   { label: "میزبانی", href: "/host" },
+  { label: "علاقه‌مندی‌ها", href: "/dashboard/wishlist" },
 ];

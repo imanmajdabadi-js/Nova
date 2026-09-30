@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { IconButton } from "@/components/ui";
+import { WishlistToggle } from "@/components/domain/wishlist-toggle";
 import type { SVGProps } from "react";
 import type { Experience } from "@/data/experiences";
 import { experiences } from "@/data/experiences";
@@ -62,11 +63,10 @@ function ExperienceHeader({ experience }: { experience: Experience }) {
             <span>{experience.location}</span>
           </div>
         </div>
-        <IconButton
-          label="افزودن به علاقه‌مندی‌ها"
-          icon={<HeartIcon />}
-          variant="ghost"
+        <WishlistToggle
+          experienceId={experience.id}
           size="md"
+          showLabel={true}
         />
       </div>
     </div>

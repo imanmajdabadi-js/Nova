@@ -13,7 +13,7 @@ export type IconButtonVariant =
 export type IconButtonSize = ButtonSize;
 
 export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  label: string;
+  label?: string;
   icon?: ReactNode;
   variant?: IconButtonVariant;
   size?: IconButtonSize;

@@ -2,9 +2,11 @@
 
 import { useMemo, useState } from "react";
 import { Button, IconButton } from "@/components/ui";
+import Image from "next/image";
 import { HeartOutlined } from "@ant-design/icons";
 import type { Experience, FilterState, SortOption } from "@/data/experiences";
 import { categories, experiences } from "@/data/experiences";
+import { WishlistToggle } from "@/components/domain/wishlist-toggle";
 
 function formatPrice(price: number): string {
   return new Intl.NumberFormat("fa-IR").format(price) + " تومان";
@@ -14,22 +16,21 @@ function ExperienceCard({ experience }: { experience: Experience }) {
   return (
     <article className="group flex flex-col overflow-hidden rounded-xl border border-border bg-surface transition-shadow duration-150 hover:shadow-medium">
       <div className="relative aspect-[4/3] overflow-hidden bg-surface-muted">
-        <img
+        <Image
           src={experience.image}
           alt={experience.title}
+          fill
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-          loading="lazy"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
         <div className="absolute inset-x-0 top-0 flex items-start justify-between p-3">
           <span className="rounded-md bg-surface/90 px-2.5 py-1 text-xs font-medium text-foreground backdrop-blur-sm">
             {experience.category}
           </span>
-          <IconButton
-            label="افزودن به علاقه‌مندی‌ها"
-            icon={<HeartOutlined />}
-            variant="ghost"
+          <WishlistToggle
+            experienceId={experience.id}
             size="sm"
-            className="bg-surface/90 backdrop-blur-sm"
+            showLabel={false}
           />
         </div>
       </div>
