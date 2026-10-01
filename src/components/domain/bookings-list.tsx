@@ -10,11 +10,14 @@ import { experiences } from "@/data/experiences";
 import { statusOrder } from "@/data/bookings";
 import type { Booking } from "@/data/bookings";
 import type { Experience } from "@/data/experiences";
+import type { CustomerBooking } from "@/lib/booking-store";
+
+type DisplayBooking = Booking | CustomerBooking;
 
 function filterBookings(
-  bookings: readonly Booking[],
+  bookings: readonly DisplayBooking[],
   filter: BookingFilter,
-): Booking[] {
+): DisplayBooking[] {
   if (filter === "all") {
     return [...bookings].sort((a, b) => {
       const aIdx = statusOrder.indexOf(a.status);
@@ -32,16 +35,23 @@ function findExperience(id: string): Experience | undefined {
 export function BookingsList({
   bookings,
   initialFilter,
+  onFilterChange,
 }: {
-  bookings: readonly Booking[];
+  bookings: readonly DisplayBooking[];
   initialFilter: BookingFilter;
+  onFilterChange?: (filter: BookingFilter) => void;
 }) {
   const [filter, setFilter] = useState<BookingFilter>(initialFilter);
   const filtered = filterBookings(bookings, filter);
 
+  const handleFilterChange = (next: BookingFilter) => {
+    setFilter(next);
+    onFilterChange?.(next);
+  };
+
   return (
     <section>
-      <BookingTabs active={filter} onChange={setFilter} />
+      <BookingTabs active={filter} onChange={handleFilterChange} />
 
       {filtered.length === 0 ? (
         <div className="py-16 text-center text-foreground-muted">

@@ -1,9 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui";
 import { cn } from "@/lib";
 import type { Experience, ExperienceSession } from "@/data/experiences";
+import { useBookingStore } from "@/lib/booking-store";
+import { validateBooking, calculateBookingTotal } from "@/data/experiences";
 
 export type BookingStep =
   "initial" | "date" | "session" | "guests" | "summary" | "confirmed";
@@ -16,17 +19,6 @@ export interface BookingSelection {
 
 function formatPrice(price: number): string {
   return new Intl.NumberFormat("fa-IR").format(price) + " تومان";
-}
-
-function generateBookingRef(): string {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ";
-  const digits = "23456789";
-  let ref = "NOVA-";
-  for (let i = 0; i < 4; i++) {
-    ref += chars[Math.floor(Math.random() * chars.length)];
-    ref += digits[Math.floor(Math.random() * digits.length)];
-  }
-  return ref;
 }
 
 function DateSelection({
@@ -274,9 +266,17 @@ function ConfirmationState({
           مبلغ: {formatPrice(totalPrice)}
         </p>
       </div>
-      <Button variant="outline" size="lg" onClick={onRestart}>
-        رزرو جدید
-      </Button>
+      <div className="flex flex-col gap-3 pt-4">
+        <Link
+          href="/dashboard/bookings"
+          className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover"
+        >
+          مشاهده رزروهای من
+        </Link>
+        <Button variant="outline" size="lg" onClick={onRestart}>
+          رزرو جدید
+        </Button>
+      </div>
     </div>
   );
 }
@@ -292,6 +292,7 @@ export function BookingFlow({ experience }: BookingFlowProps) {
     useState<ExperienceSession | null>(null);
   const [guestCount, setGuestCount] = useState(1);
   const [bookingRef, setBookingRef] = useState<string | null>(null);
+  const isConfirmingRef = useRef(false);
 
   const selection: BookingSelection = useMemo(
     () => ({
@@ -356,8 +357,40 @@ export function BookingFlow({ experience }: BookingFlowProps) {
   };
 
   const handleConfirm = () => {
-    setBookingRef(generateBookingRef());
+    if (isConfirmingRef.current) return;
+    isConfirmingRef.current = true;
+
+    const { date, session, guests } = selection;
+    if (!date || !session) {
+      isConfirmingRef.current = false;
+      return;
+    }
+
+    // Validate booking
+    const validation = validateBooking(experience.id, session.id, guests);
+    if (!validation.valid) {
+      console.warn("Booking validation failed:", validation.error);
+      isConfirmingRef.current = false;
+      return;
+    }
+
+    // Calculate total price
+    const total = calculateBookingTotal(experience.id, guests);
+
+    // Add booking to store
+    const newBooking = useBookingStore.getState().addBooking({
+      experienceId: experience.id,
+      sessionId: session.id,
+      date,
+      time: session.time,
+      guestCount: guests,
+      totalPrice: total,
+      status: "confirmed",
+    });
+
+    setBookingRef(newBooking.reference);
     setStep("confirmed");
+    isConfirmingRef.current = false;
   };
 
   const handleRestart = () => {

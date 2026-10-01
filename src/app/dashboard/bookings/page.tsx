@@ -1,6 +1,6 @@
 import { use } from "react";
-import { BookingsList } from "@/components/domain/bookings-list";
-import { bookings } from "@/data/bookings";
+import { Suspense } from "react";
+import { BookingsListWrapper } from "./BookingsListWrapper";
 import type { BookingFilter } from "@/components/domain/booking-tabs";
 
 const pageDescription =
@@ -26,7 +26,17 @@ export default function DashboardBookingsPage({
           </p>
         </header>
 
-        <BookingsList bookings={bookings} initialFilter={initialFilter} />
+        <Suspense
+          fallback={
+            <div className="space-y-4">
+              <div className="animate-pulse h-24 bg-surface-muted rounded" />
+              <div className="animate-pulse h-24 bg-surface-muted rounded" />
+              <div className="animate-pulse h-24 bg-surface-muted rounded" />
+            </div>
+          }
+        >
+          <BookingsListWrapper initialFilter={initialFilter} />
+        </Suspense>
       </div>
     </div>
   );

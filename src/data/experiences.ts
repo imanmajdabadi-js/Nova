@@ -479,3 +479,55 @@ export const defaultFilterState: FilterState = {
   location: "همه",
   sort: "featured",
 };
+
+export function findExperienceById(id: string): Experience | undefined {
+  return experiences.find((e) => e.id === id);
+}
+
+export function findSessionById(
+  experienceId: string,
+  sessionId: string,
+): ExperienceSession | undefined {
+  const experience = findExperienceById(experienceId);
+  if (!experience) return undefined;
+  return experience.sessions.find((s) => s.id === sessionId);
+}
+
+export function validateBooking(
+  experienceId: string,
+  sessionId: string,
+  guestCount: number,
+): { valid: boolean; error?: string } {
+  const experience = findExperienceById(experienceId);
+  if (!experience) {
+    return { valid: false, error: "تجربه یافت نشد" };
+  }
+
+  const session = findSessionById(experienceId, sessionId);
+  if (!session) {
+    return { valid: false, error: "جلسه یافت نشد" };
+  }
+
+  if (session.remainingCapacity <= 0) {
+    return { valid: false, error: "ظرفیت جلسه تکمیل شده است" };
+  }
+
+  if (guestCount < 1) {
+    return { valid: false, error: "تعداد مهمان باید حداقل ۱ نفر باشد" };
+  }
+
+  if (guestCount > session.remainingCapacity) {
+    return { valid: false, error: "تعداد مهمان از ظرفیت باقی‌مانده بیشتر است" };
+  }
+
+  return { valid: true };
+}
+
+export function calculateBookingTotal(
+  experienceId: string,
+  guestCount: number,
+): number {
+  const experience = findExperienceById(experienceId);
+  if (!experience) return 0;
+  return experience.price * guestCount;
+}

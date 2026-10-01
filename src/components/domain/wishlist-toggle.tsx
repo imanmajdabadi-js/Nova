@@ -14,7 +14,7 @@ function useClient() {
       return () => window.removeEventListener("hydration", callback);
     },
     () => true,
-    () => false
+    () => false,
   );
 }
 

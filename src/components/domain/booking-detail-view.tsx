@@ -5,7 +5,10 @@ import { formatPriceFa } from "@/lib";
 import { statusBadgeVariant, statusLabels } from "@/data/bookings";
 import type { Booking } from "@/data/bookings";
 import type { Experience } from "@/data/experiences";
+import type { CustomerBooking } from "@/lib/booking-store";
 import type { SVGProps, ReactNode } from "react";
+
+type DisplayBooking = Booking | CustomerBooking;
 
 function StarIcon(props: SVGProps<SVGSVGElement>) {
   return (
@@ -21,6 +24,30 @@ function StarIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function isLegacyBooking(booking: DisplayBooking): booking is Booking {
+  return "session" in booking;
+}
+
+function getBookingCreatedAt(booking: DisplayBooking): string {
+  return isLegacyBooking(booking) ? booking.createdAt : booking.createdAt;
+}
+
+function getBookingPrice(booking: DisplayBooking): number {
+  return isLegacyBooking(booking) ? booking.price : booking.totalPrice;
+}
+
+function getBookingParticipants(booking: DisplayBooking): number {
+  return isLegacyBooking(booking) ? booking.participants : booking.guestCount;
+}
+
+function getBookingSessionDate(booking: DisplayBooking): string {
+  return isLegacyBooking(booking) ? booking.session.date : booking.date;
+}
+
+function getBookingSessionTime(booking: DisplayBooking): string {
+  return isLegacyBooking(booking) ? booking.session.time : booking.time;
+}
+
 function InfoRow({ label, value }: { label: string; value: ReactNode }) {
   return (
     <div className="flex justify-between py-2 text-sm">
@@ -31,8 +58,6 @@ function InfoRow({ label, value }: { label: string; value: ReactNode }) {
 }
 
 function ExperienceSummary({ experience }: { experience: Experience }) {
-  const formattedPrice = formatPriceFa(experience.price) + " تومان";
-
   return (
     <Card>
       <CardHeader>
@@ -101,7 +126,7 @@ function ExperienceSummary({ experience }: { experience: Experience }) {
             <div className="pt-2 text-sm text-foreground-muted">
               <span>قیمت: </span>
               <span className="font-medium text-foreground">
-                {formattedPrice}
+                {formatPriceFa(experience.price) + " تومان"}
               </span>
               <span className="mx-1 text-foreground-subtle">/</span>
               <span>برای هر نفر</span>
@@ -117,9 +142,13 @@ function SessionDetails({
   booking,
   experience,
 }: {
-  booking: Booking;
+  booking: DisplayBooking;
   experience: Experience;
 }) {
+  const sessionDate = getBookingSessionDate(booking);
+  const sessionTime = getBookingSessionTime(booking);
+  const participants = getBookingParticipants(booking);
+
   return (
     <Card>
       <CardHeader>
@@ -127,9 +156,9 @@ function SessionDetails({
       </CardHeader>
       <CardBody>
         <div className="space-y-1">
-          <InfoRow label="تاریخ" value={booking.session.date} />
-          <InfoRow label="ساعت" value={booking.session.time} />
-          <InfoRow label="تعداد مهمان" value={`${booking.participants} نفر`} />
+          <InfoRow label="تاریخ" value={sessionDate} />
+          <InfoRow label="ساعت" value={sessionTime} />
+          <InfoRow label="تعداد مهمان" value={`${participants} نفر`} />
           <InfoRow label="موقعیت" value={experience.location} />
         </div>
       </CardBody>
@@ -137,10 +166,9 @@ function SessionDetails({
   );
 }
 
-function BookingSummary({ booking }: { booking: Booking }) {
-  const variant = statusBadgeVariant[booking.status];
+function BookingSummary({ booking }: { booking: DisplayBooking }) {
   const label = statusLabels[booking.status];
-  const formattedPrice = formatPriceFa(booking.price) + " تومان";
+  const createdAt = getBookingCreatedAt(booking);
 
   return (
     <Card>
@@ -150,20 +178,20 @@ function BookingSummary({ booking }: { booking: Booking }) {
       <CardBody>
         <div className="space-y-3">
           <InfoRow label="کد رزرو" value={booking.reference} />
-          <InfoRow label="تاریخ رزرو" value={booking.createdAt} />
+          <InfoRow label="تاریخ رزرو" value={createdAt} />
           <InfoRow label="وضعیت" value={label} />
           <InfoRow
             label="مجموع"
             value={
               <span className="font-semibold text-primary">
-                {formattedPrice}
+                {formatPriceFa(getBookingPrice(booking)) + " تومان"}
               </span>
             }
           />
         </div>
       </CardBody>
       <CardFooter>
-        <Badge variant={variant} size="sm">
+        <Badge variant={statusBadgeVariant[booking.status]} size="sm">
           {label}
         </Badge>
       </CardFooter>
@@ -175,7 +203,7 @@ export function BookingDetailView({
   booking,
   experience,
 }: {
-  booking: Booking;
+  booking: DisplayBooking;
   experience: Experience;
 }) {
   return (

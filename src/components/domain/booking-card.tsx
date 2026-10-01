@@ -4,8 +4,11 @@ import { Badge } from "@/components/ui";
 import { cn, formatPriceFa } from "@/lib";
 import type { Booking } from "@/data/bookings";
 import type { Experience } from "@/data/experiences";
+import type { CustomerBooking } from "@/lib/booking-store";
 import { statusBadgeVariant, statusLabels } from "@/data/bookings";
 import type { SVGProps } from "react";
+
+type DisplayBooking = Booking | CustomerBooking;
 
 function StarIcon(props: SVGProps<SVGSVGElement>) {
   return (
@@ -21,14 +24,46 @@ function StarIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function getBookingSessionDate(booking: DisplayBooking): string {
+  if ("session" in booking) {
+    return booking.session.date;
+  }
+  return booking.date;
+}
+
+function getBookingSessionTime(booking: DisplayBooking): string {
+  if ("session" in booking) {
+    return booking.session.time;
+  }
+  return booking.time;
+}
+
+function getBookingParticipants(booking: DisplayBooking): number {
+  if ("participants" in booking) {
+    return booking.participants;
+  }
+  return booking.guestCount;
+}
+
+function getBookingPrice(booking: DisplayBooking): number {
+  if ("price" in booking) {
+    return booking.price;
+  }
+  return booking.totalPrice;
+}
+
 export function BookingCard({
   booking,
   experience,
 }: {
-  booking: Booking;
+  booking: DisplayBooking;
   experience: Experience;
 }) {
-  const { session, participants, price, reference, status } = booking;
+  const sessionDate = getBookingSessionDate(booking);
+  const sessionTime = getBookingSessionTime(booking);
+  const participants = getBookingParticipants(booking);
+  const price = getBookingPrice(booking);
+  const { reference, status } = booking;
   const formattedPrice = formatPriceFa(price) + " تومان";
   const variant = statusBadgeVariant[status];
   const statusLabel = statusLabels[status];
@@ -75,11 +110,11 @@ export function BookingCard({
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
           <span className="flex items-center gap-1 text-foreground-muted">
             <span>📅</span>
-            <span>{session.date}</span>
+            <span>{sessionDate}</span>
           </span>
           <span className="flex items-center gap-1 text-foreground-muted">
             <span>⏰</span>
-            <span>{session.time}</span>
+            <span>{sessionTime}</span>
           </span>
           <span className="flex items-center gap-1 text-foreground-muted">
             <span>👥</span>

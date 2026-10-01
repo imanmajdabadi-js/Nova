@@ -242,20 +242,18 @@ function FilterBar({
   );
 }
 
-function DiscoverPageClient() {
+function DiscoverPageClient({
+  initialFilters,
+}: {
+  initialFilters: {
+    search: string;
+    category: string;
+    location: string;
+    sort: SortOption;
+  };
+}) {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  const initialFilters = useMemo(
-    () => ({
-      search: searchParams.get("q") || "",
-      category: searchParams.get("category") || "همه",
-      location: searchParams.get("location") || "همه",
-      sort: (searchParams.get("sort") as SortOption) || "featured",
-    }),
-    [searchParams],
-  );
 
   const [filters, setFilters] = useState<{
     search: string;
@@ -279,7 +277,7 @@ function DiscoverPageClient() {
   const locations = useMemo(() => getUniqueLocations(experiences), []);
 
   const filtered = useMemo(
-    () => filterExperiences(experiences, filters as FilterState),
+    () => filterExperiences(experiences, filters),
     [filters],
   );
 
@@ -368,6 +366,22 @@ function DiscoverPageClient() {
   );
 }
 
+function DiscoverPageContent() {
+  const searchParams = useSearchParams();
+
+  const initialFilters = useMemo(
+    () => ({
+      search: searchParams.get("q") || "",
+      category: searchParams.get("category") || "همه",
+      location: searchParams.get("location") || "همه",
+      sort: (searchParams.get("sort") as SortOption) || "featured",
+    }),
+    [searchParams],
+  );
+
+  return <DiscoverPageClient initialFilters={initialFilters} />;
+}
+
 export default function DiscoverPage() {
   return (
     <Suspense
@@ -380,7 +394,7 @@ export default function DiscoverPage() {
         </div>
       }
     >
-      <DiscoverPageClient />
+      <DiscoverPageContent />
     </Suspense>
   );
 }
